@@ -35,6 +35,12 @@
       "date": "2020-06-25T12:38:11.268Z",
       "important": true,
       "id": 6
+    },
+    {
+      "content": "a new note...",
+      "date": "2020-06-27T19:26:02.606Z",
+      "important": true,
+      "id": 7
     }
   ]
 }
