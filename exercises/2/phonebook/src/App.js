@@ -10,6 +10,15 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
 
+  const deletePerson = (id) => {
+    if (window.confirm(`Are you sure you want to delete ${persons.find((p) => p.id === id).name}`)) {
+      personsService
+        .remove(id)
+        .then(setPersons(persons.filter(item => item.id !== id)))
+        .catch(err => console.log(err))
+    }
+
+  }
   useEffect(() => {
     personsService
       .getAll()
@@ -24,7 +33,7 @@ const App = () => {
       <h2>Add new entry</h2>
       <NewEntryForm persons={persons} setPersons={setPersons} newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} />
       <h2>Numbers</h2>
-      <Entries persons={persons} newSearch={newSearch} />
+      <Entries persons={persons} newSearch={newSearch} deletePerson={deletePerson} />
     </div>
   )
 }
