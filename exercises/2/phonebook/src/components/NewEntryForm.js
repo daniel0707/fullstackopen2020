@@ -1,4 +1,5 @@
 import React from 'react'
+import personsService from './../services/persons'
 
 const NewEntryForm = ({ persons, setPersons, newName, setNewName, newNumber, setNewNumber }) => {
   const addEntry = (event) => {
@@ -8,7 +9,10 @@ const NewEntryForm = ({ persons, setPersons, newName, setNewName, newNumber, set
     } else if (persons.some(person => person['number'] === newNumber)) {
       window.alert(`Number ${newNumber} already exists in the phonebook!`)
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber }))
+      personsService
+        .create({ name: newName, number: newNumber })
+        .then((resp) => setPersons([...persons, resp]))
+        .catch(err => console.log(err))
     }
     setNewName('')
     setNewNumber('')

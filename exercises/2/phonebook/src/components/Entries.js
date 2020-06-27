@@ -7,7 +7,7 @@ const Entries = ({ persons, newSearch }) => {
             {persons.map((person) => {
                 if (person.name.toLowerCase().includes(newSearch.toLowerCase())) {
                     return (<Person key={person.name} person={person} />)
-                }
+                } else { return null }
             })}
         </ul>
     )
