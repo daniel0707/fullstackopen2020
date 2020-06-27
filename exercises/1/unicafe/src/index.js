@@ -25,12 +25,14 @@ const Statistics = ({ good, neutral, bad }) => {
     return (
       <div>
         <table>
-          <Statistic name="good" value={good} />
-          <Statistic name="neutral" value={neutral} />
-          <Statistic name="bad" value={bad} />
-          <Statistic name="all" value={total} />
-          <Statistic name="average" value={average} />
-          <Statistic name="positive" value={`${positive}%`} />
+          <tbody>
+            <Statistic name="good" value={good} />
+            <Statistic name="neutral" value={neutral} />
+            <Statistic name="bad" value={bad} />
+            <Statistic name="all" value={total} />
+            <Statistic name="average" value={average} />
+            <Statistic name="positive" value={`${positive}%`} />
+          </tbody>
         </table>
       </div>
     )
@@ -59,10 +61,7 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-  const countPositive = (good, bad, neutral) => {
-    let val = good / (good + bad + neutral) * 100
-    return `${val}%`
-  }
+
   return (
     <div>
       <Header line="give feedback" />
