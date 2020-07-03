@@ -25,6 +25,11 @@ let persons = [
         "id": 4
     }
 ]
+
+const generateId = () => {
+    return Math.random() * 10000000000000000
+}
+
 app.get('/api/persons', (req, res) => {
     res.json(persons)
 })
@@ -53,6 +58,24 @@ app.delete('/api/persons/:id', (req, res) => {
         res.status(404).end()
     }
 
+})
+
+app.post('/api/persons', (req, res) => {
+    if (!req.body.name) {
+        res.status(400).send({ error: "Name missing" })
+    } else if (!req.body.number) {
+        res.status(400).send({ error: "Number missing" })
+    } else if (persons.some(p => p.name === req.body.name)) {
+        res.status(400).send({ error: `${req.body.name} already exists in phonebook` })
+    } else {
+        const p = {
+            "name": req.body.name,
+            "number": req.body.number,
+            "id": generateId()
+        }
+        persons.push(p)
+        res.status(201).send(p)
+    }
 })
 
 const PORT = 3001
