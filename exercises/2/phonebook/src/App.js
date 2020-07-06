@@ -17,7 +17,7 @@ const App = () => {
     setMessage(text)
     setTimeout(() => {
       setMessage(null)
-    }, 30000)
+    }, 3000)
   }
 
   const deletePerson = (id) => {
@@ -39,7 +39,7 @@ const App = () => {
       .getAll()
       .then(resp => setPersons(resp))
       .catch(err => {
-        notify(`Failed to fetch phonebook from backend, with reason: ${err.message}`,false)()
+        notify(`Failed to fetch phonebook from backend, with reason: ${err.message}`, false)()
         console.log(err)
       })
   }, [])
