@@ -1,13 +1,15 @@
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+const Person = require('./models/person')
+require('dotenv').config()
 
 morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
 app.use(express.json())
 app.use(express.static('build'))
 app.use(morgan(':method :url :status :req[content-length] :response-time ms :body'))
 
-let persons = [
+/* let persons = [
     {
         "name": "Arto Hellas",
         "number": "040-123456",
@@ -28,32 +30,28 @@ let persons = [
         "number": "39-23-6423122",
         "id": 4
     }
-]
-
-const generateId = () => {
-    return Math.random() * 10000000000000000
-}
+] */
 
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    Person.find({}).then(people => {
+        res.json(people)
+    })
 })
 
 app.get('/info', (req, res) => {
     const d = new Date()
-    res.send(`<p>Phonebook has infor for ${persons.length} people</p><p>${d}</p>`)
+    Person.find({}).then(people => {
+        res.send(`<p>Phonebook has infor for ${people.length} people</p><p>${d}</p>`)
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(p => p.id === id)
-    if (person) {
+    Person.findById(req.params.id).then(person => {
         res.json(person)
-    } else {
-        res.status(404).end()
-    }
+    })
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+/* app.delete('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)
     if (persons.some(p => p.id === id)) {
         persons = persons.filter(p => p.id !== id)
@@ -61,27 +59,25 @@ app.delete('/api/persons/:id', (req, res) => {
     } else {
         res.status(404).end()
     }
-})
+}) */
 
 app.post('/api/persons', (req, res) => {
     if (!req.body.name) {
         res.status(400).send({ error: "Name missing" })
     } else if (!req.body.number) {
         res.status(400).send({ error: "Number missing" })
-    } else if (persons.some(p => p.name === req.body.name)) {
-        res.status(400).send({ error: `${req.body.name} already exists in phonebook` })
+        /*     } else if (persons.some(p => p.name === req.body.name)) {
+                res.status(400).send({ error: `${req.body.name} already exists in phonebook` }) */
     } else {
-        const p = {
+        const p = new Person({
             "name": req.body.name,
             "number": req.body.number,
-            "id": generateId()
-        }
-        persons.push(p)
-        res.status(201).send(p)
+        })
+        p.save().then(savedPerson => res.json(savedPerson))
     }
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
