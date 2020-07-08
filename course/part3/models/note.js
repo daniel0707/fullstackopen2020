@@ -4,6 +4,7 @@ const dotenv = require('dotenv').config()
 const url = process.env.MONGO_DB_URL
 
 console.log('connecting to', url)
+mongoose.set('useFindAndModify', false)
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(result => {
