@@ -9,6 +9,15 @@ app.use(express.json())
 app.use(express.static('build'))
 app.use(morgan(':method :url :status :req[content-length] :response-time ms :body'))
 
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' })
+    }
+
+    next(error)
+}
 /* let persons = [
     {
         "name": "Arto Hellas",
@@ -36,6 +45,8 @@ app.get('/api/persons', (req, res) => {
     Person.find({}).then(people => {
         res.json(people)
     })
+        .catch(error => next(error))
+
 })
 
 app.get('/info', (req, res) => {
@@ -43,12 +54,15 @@ app.get('/info', (req, res) => {
     Person.find({}).then(people => {
         res.send(`<p>Phonebook has infor for ${people.length} people</p><p>${d}</p>`)
     })
+        .catch(error => next(error))
+
 })
 
 app.get('/api/persons/:id', (req, res) => {
     Person.findById(req.params.id).then(person => {
         res.json(person)
     })
+        .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -56,6 +70,7 @@ app.delete('/api/persons/:id', (req, res) => {
         .then(result => {
             res.status(204).end()
         })
+        .catch(error => next(error))
 })
 
 app.post('/api/persons', (req, res) => {
@@ -70,8 +85,11 @@ app.post('/api/persons', (req, res) => {
             "name": req.body.name,
             "number": req.body.number,
         })
-        p.save().then(savedPerson => res.json(savedPerson))
+        p.save()
+            .then(savedPerson => res.json(savedPerson))
+            .catch(error => next(error))
     }
+
 })
 
 const PORT = process.env.PORT
