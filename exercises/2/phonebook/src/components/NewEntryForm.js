@@ -7,7 +7,7 @@ const NewEntryForm = ({ persons, setPersons, newName, setNewName, newNumber, set
     setMessage(text)
     setTimeout(() => {
       setMessage(null)
-    }, 30000)
+    }, 3000)
   }
   const addEntry = (event) => {
     event.preventDefault()
@@ -39,7 +39,8 @@ const NewEntryForm = ({ persons, setPersons, newName, setNewName, newNumber, set
         .then((resp) => setPersons([...persons, resp]))
         .then(notify(`Added ${newName}`, true))
         .catch(err => {
-          notify(`Failed to save ${newName} with reason: ${err.message}`, false)()
+          const reason = err.response.data ? JSON.stringify(err.response.data) : err.message
+          notify(`Failed to save ${newName} with reason: ${reason}`, false)()
           console.log(err)
         })
     }
