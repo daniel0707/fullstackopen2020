@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/5f33abd2d1673a401c0d32be 
+Content-Type: application/json
+
+{
+    "title":"FullStackOpen2020",
+    "author":"Matti Luukkainen",
+    "url":"https://fullstackopen.com/",
+    "likes":20000
+}
