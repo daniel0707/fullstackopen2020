@@ -1,4 +1,3 @@
-const { response } = require('express');
 const listHelper = require('../utils/list_helper');
 const constants = require('./constants');
 
