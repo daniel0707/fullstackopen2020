@@ -43,6 +43,18 @@ test('ID should be without low dash', async () => {
   });
 });
 
+test('a valid blog can be added', async () => {
+  await api
+    .post('/api/blogs')
+    .send(helper.newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDB();
+  expect(blogsAtEnd).toHaveLength(helper.manyBlogs.length + 1);
+  expect(blogsAtEnd).toEqual(expect.arrayContaining([expect.objectContaining(helper.newBlog)]));
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });

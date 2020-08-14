@@ -1,3 +1,5 @@
+const Blog = require('../models/blog');
+
 const listWithOneBlog = [
   {
     _id: '5a422aa71b54a676234d17f8',
@@ -8,6 +10,13 @@ const listWithOneBlog = [
     __v: 0,
   },
 ];
+
+const newBlog = {
+  title: 'The Algorithm Design Manual',
+  author: 'Steven Skienna',
+  url: 'http://www.algorist.com/',
+  likes: 9,
+};
 
 const favBlog = {
   title: 'Go To Statement Considered Harmful',
@@ -30,8 +39,15 @@ const manyBlogs = [{
 },
 ];
 
+const blogsInDB = async () => {
+  const blogs = await Blog.find({});
+  return blogs.map((blog) => blog.toJSON());
+};
+
 module.exports = {
   listWithOneBlog,
   manyBlogs,
   favBlog,
+  newBlog,
+  blogsInDB,
 };
