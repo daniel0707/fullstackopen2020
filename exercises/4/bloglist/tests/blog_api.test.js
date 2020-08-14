@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
+const _ = require('lodash');
 const app = require('../app');
 const helper = require('./test_helper');
 const Blog = require('../models/blog');
@@ -53,6 +54,21 @@ test('a valid blog can be added', async () => {
   const blogsAtEnd = await helper.blogsInDB();
   expect(blogsAtEnd).toHaveLength(helper.manyBlogs.length + 1);
   expect(blogsAtEnd).toEqual(expect.arrayContaining([expect.objectContaining(helper.newBlog)]));
+});
+
+test('a blog without likes specified will default to 0', async () => {
+  const blogWithoutLikes = _.omit(helper.newBlog, 'likes');
+  await api
+    .post('/api/blogs')
+    .send(blogWithoutLikes)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDB();
+
+  expect(blogsAtEnd).toHaveLength(helper.manyBlogs.length + 1);
+  expect(blogsAtEnd).toEqual(expect.arrayContaining([expect.objectContaining(blogWithoutLikes)]));
+  expect(blogsAtEnd.find((b) => b.title === 'The Algorithm Design Manual').likes).toEqual(0);
 });
 
 afterAll(() => {

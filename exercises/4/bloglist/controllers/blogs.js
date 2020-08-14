@@ -1,4 +1,5 @@
 const blogsRouter = require('express').Router();
+const _ = require('lodash');
 const Blog = require('../models/blog');
 
 blogsRouter.get('/', async (request, response) => {
@@ -32,6 +33,7 @@ blogsRouter.delete('/:id', async (request, response) => {
 });
 
 blogsRouter.post('/', async (request, response) => {
+  if (!_.has(request.body, 'likes')) request.body.likes = 0;
   const blog = new Blog(request.body);
   const savedBlog = await blog.save();
   response.status(201).json(savedBlog);
