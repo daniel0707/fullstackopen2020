@@ -25,11 +25,6 @@ test('all blogs are returned', async () => {
   expect(response.body).toHaveLength(helper.manyBlogs.length);
 });
 
-test('the first blog is about React', async () => {
-  const response = await api.get('/api/blogs');
-  expect(response.body[0].title).toBe('React patterns');
-});
-
 test('there is a blog with TDD in title', async () => {
   const response = await api.get('/api/blogs');
   const titles = response.body.map((b) => b.title);
@@ -39,6 +34,13 @@ test('there is a blog with TDD in title', async () => {
 test('there should be a Dijkstra with many likes', async () => {
   const response = await api.get('/api/blogs');
   expect(response.body).toEqual(expect.arrayContaining([expect.objectContaining(helper.favBlog)]));
+});
+
+test('ID should be without low dash', async () => {
+  const response = await api.get('/api/blogs');
+  response.body.forEach((blog) => {
+    expect(blog.id).toBeDefined();
+  });
 });
 
 afterAll(() => {
