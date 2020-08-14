@@ -71,6 +71,35 @@ test('a blog without likes specified will default to 0', async () => {
   expect(blogsAtEnd.find((b) => b.title === 'The Algorithm Design Manual').likes).toEqual(0);
 });
 
+test('a request body missing title and or url will not succeed', async () => {
+  await api
+    .post('/api/blogs')
+    .send({ likes: 0 })
+    .expect(400);
+
+  await api
+    .post('/api/blogs')
+    .send({ title: 'test title' })
+    .expect(400);
+
+  await api
+    .post('/api/blogs')
+    .send({ url: 'test url' })
+    .expect(400);
+});
+
+test('minimum input for blog creation is url and title', async () => {
+  const resp = await api
+    .post('/api/blogs')
+    .send({ url: 'test url', title: 'test title' })
+    .expect(201);
+  expect(resp.body).toEqual(
+    expect.objectContaining({
+      url: 'test url', title: 'test title', likes: 0, author: null,
+    }),
+  );
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
