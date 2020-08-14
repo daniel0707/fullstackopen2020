@@ -6,6 +6,11 @@ notesRouter.get('/', async (request, response) => {
   response.json(notes)
 })
 
+notesRouter.delete('/:id', async (request, response) => {
+  await Note.findByIdAndRemove(request.params.id)
+  response.status(204).end()
+})
+
 notesRouter.get('/:id', async (request, response, next) => {
   try {
     const note = await Note.findById(request.params.id)
