@@ -115,6 +115,22 @@ test('a blog can be deleted and will return 204', async () => {
   expect(blogsAfterDelete).not.toContain(expect.objectContaining(_.omit(blogToDelete, 'id')));
 });
 
+test('a blog can be updated', async () => {
+  const newBlog = (await api.post('/api/blogs').send(helper.newBlog)).body;
+  const updatedBlog = (await api
+    .put(`/api/blogs/${newBlog.id}`)
+    .send(
+      _.chain(newBlog)
+        .set('likes', 20)
+        .omit('id'),
+    )
+    .expect(200))
+    .body;
+
+  const updatedBlogList = await helper.blogsInDB();
+  expect(updatedBlogList).toEqual(expect.arrayContaining([expect.objectContaining(updatedBlog)]));
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
