@@ -100,6 +100,21 @@ test('minimum input for blog creation is url and title', async () => {
   );
 });
 
+test('a blog can be deleted and will return 204', async () => {
+  const blogsAtStart = await helper.blogsInDB();
+  const blogToDelete = blogsAtStart[0];
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204);
+
+  const blogsAfterDelete = await helper.blogsInDB();
+
+  expect(blogsAfterDelete).toHaveLength(blogsAtStart.length - 1);
+  expect(blogsAfterDelete.map((b) => b.id)).not.toContain(blogToDelete.id);
+  expect(blogsAfterDelete).not.toContain(expect.objectContaining(_.omit(blogToDelete, 'id')));
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
