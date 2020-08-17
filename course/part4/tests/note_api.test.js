@@ -3,9 +3,10 @@ const mongoose = require('mongoose')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
-
 const Note = require('../models/note')
 const User = require('../models/user')
+
+authHeader = ["Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RlciIsImlkIjoiNWYzYTVmM2NlYWU1YTgwNTJjMzVlYTUzIiwiaWF0IjoxNTk3NjYwOTkzfQ.gTTr1ELqYY8echwQaXRS--OVplv5tEaWOJKig5hRJss"]
 
 describe('when there is initially some notes saved', () => {
   beforeEach(async () => {
@@ -82,6 +83,7 @@ describe('when there is initially some notes saved', () => {
 
       await api
         .post('/api/notes')
+        .set(...authHeader)
         .send(newNote)
         .expect(200)
         .expect('Content-Type', /application\/json/)
@@ -103,6 +105,7 @@ describe('when there is initially some notes saved', () => {
 
       await api
         .post('/api/notes')
+        .set(...authHeader)
         .send(newNote)
         .expect(400)
 
