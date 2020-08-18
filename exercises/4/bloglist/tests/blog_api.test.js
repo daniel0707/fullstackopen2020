@@ -113,21 +113,57 @@ describe('starting tests and running initial setups', () => {
           }),
         );
       });
+
+      test('will fail with no authorization', async () => {
+        await api
+          .post('/api/blogs')
+          .send({ url: 'test url', title: 'test title' })
+          .expect(401);
+      });
     });
 
     test('a blog can be deleted and will return 204', async () => {
+      const freshBlog = await api
+        .post('/api/blogs')
+        .set(helper.anonymAuth)
+        .send(helper.newBlog);
       const blogsAtStart = await helper.blogsInDB();
-      const blogToDelete = blogsAtStart[0];
+      const blogToDelete = freshBlog.body;
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
+        .set(helper.anonymAuth)
         .expect(204);
 
       const blogsAfterDelete = await helper.blogsInDB();
 
       expect(blogsAfterDelete).toHaveLength(blogsAtStart.length - 1);
       expect(blogsAfterDelete.map((b) => b.id)).not.toContain(blogToDelete.id);
-      expect(blogsAfterDelete).not.toContain(expect.objectContaining(_.omit(blogToDelete, 'id')));
+      expect(blogsAfterDelete)
+        .not.toContain(
+          expect.objectContaining(
+            _.omit(blogToDelete, ['id', 'user']),
+          ),
+        );
+    });
+
+    test('a blog will not be deleted by someone else', async () => {
+      const blogsAtStart = await helper.blogsInDB();
+      const blogToDelete = blogsAtStart[0];
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set(helper.anonymAuth)
+        .expect(401);
+    });
+
+    test('a blog will not be deleted by someone without token', async () => {
+      const blogsAtStart = await helper.blogsInDB();
+      const blogToDelete = blogsAtStart[0];
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(401);
     });
 
     test('a blog can be updated', async () => {
