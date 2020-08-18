@@ -186,6 +186,30 @@ describe('starting tests and running initial setups', () => {
     });
   });
 });
+
+describe('loging in', () => {
+  test('succeeds with corrent credentials', async () => {
+    await api
+      .post('/api/login')
+      .send({ username: 'anonymous', password: 'anonymous' })
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+  });
+  test('fails with wrong password', async () => {
+    await api
+      .post('/api/login')
+      .send({ username: 'anonymous', password: 'wrongPassword' })
+      .expect(401)
+      .expect('Content-Type', /application\/json/);
+  });
+  test('fails with non existing user', async () => {
+    await api
+      .post('/api/login')
+      .send({ username: 'n0', password: 'wrongPassword' })
+      .expect(401)
+      .expect('Content-Type', /application\/json/);
+  });
+});
 afterAll(() => {
   mongoose.connection.close();
 });

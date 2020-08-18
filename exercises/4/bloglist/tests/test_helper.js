@@ -31,6 +31,9 @@ const manyUsers = [
   {
     _id: '5f3bbec41b47b70ca01c4d8e', blogs: [{ _id: '5a422b891b54a676234d17fa' }], username: 'testerTwo', name: 'tester Two', passwordHash: '$2b$10$0TPS1wsqBR/AU7Q/4Po48e4QtICJV/e6SkvyK8ZkbPc6Ux4UJolYe', __v: '0',
   },
+  {
+    _id: '5f3bfedd25e91f7b7c43f8b1', blogs: [], username: 'anonymous', name: 'anonymous', passwordHash: '$2b$10$C3iaqIG2XCqR4tTehCgdG.cC4iE8V7RaWbiTvfnogYAnch6oYvOQ6', __v: '0',
+  },
 ];
 
 const manyBlogs = [{
