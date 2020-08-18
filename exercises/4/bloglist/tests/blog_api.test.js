@@ -5,6 +5,7 @@ const app = require('../app');
 const helper = require('./test_helper');
 const Blog = require('../models/blog');
 const User = require('../models/user');
+const { anonymAuth } = require('./test_helper');
 
 const api = supertest(app);
 describe('starting tests and running initial setups', () => {
@@ -52,6 +53,7 @@ describe('starting tests and running initial setups', () => {
       test('succeeds with valid input', async () => {
         await api
           .post('/api/blogs')
+          .set(helper.anonymAuth)
           .send(helper.newBlog)
           .expect(201)
           .expect('Content-Type', /application\/json/);
@@ -66,6 +68,7 @@ describe('starting tests and running initial setups', () => {
         const blogWithoutLikes = _.omit(helper.newBlog, 'likes');
         await api
           .post('/api/blogs')
+          .set(anonymAuth)
           .send(blogWithoutLikes)
           .expect(201)
           .expect('Content-Type', /application\/json/);
@@ -81,16 +84,19 @@ describe('starting tests and running initial setups', () => {
       test('with missing title and or url will not succeed', async () => {
         await api
           .post('/api/blogs')
+          .set(anonymAuth)
           .send({ likes: 0 })
           .expect(400);
 
         await api
           .post('/api/blogs')
+          .set(anonymAuth)
           .send({ title: 'test title' })
           .expect(400);
 
         await api
           .post('/api/blogs')
+          .set(anonymAuth)
           .send({ url: 'test url' })
           .expect(400);
       });
@@ -98,6 +104,7 @@ describe('starting tests and running initial setups', () => {
       test('will succeed with minimum input - url and title', async () => {
         const resp = await api
           .post('/api/blogs')
+          .set(anonymAuth)
           .send({ url: 'test url', title: 'test title' })
           .expect(201);
         expect(resp.body).toEqual(
@@ -124,17 +131,21 @@ describe('starting tests and running initial setups', () => {
     });
 
     test('a blog can be updated', async () => {
-      const newBlog = (await api.post('/api/blogs').send(helper.newBlog)).body;
+      const newBlog = (await api
+        .post('/api/blogs')
+        .set(helper.anonymAuth)
+        .send(helper.newBlog))
+        .body;
       const updatedBlog = (await api
         .put(`/api/blogs/${newBlog.id}`)
         .send(
           _.chain(newBlog)
             .set('likes', 20)
-            .omit('id'),
+            .omit('id')
+            .omit('user'),
         )
         .expect(200))
         .body;
-
       const updatedBlogList = await helper.blogsInDB();
       expect(updatedBlogList)
         .toEqual(expect.arrayContaining([expect.objectContaining(_.omit(updatedBlog, 'user'))]));

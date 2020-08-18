@@ -11,7 +11,7 @@ const listWithOneBlog = [
     __v: 0,
   },
 ];
-
+const anonymAuth = { authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFub255bW91cyIsImlkIjoiNWYzYmZlZGQyNWU5MWY3YjdjNDNmOGIxIiwiaWF0IjoxNTk3NzcyMDQ5fQ.tYA3bdo-TMXLFgtE8c5r_1v4XBG2gK0Gu23FLvLDFSs' };
 const newBlog = {
   title: 'The Algorithm Design Manual',
   author: 'Steven Skienna',
@@ -75,4 +75,5 @@ module.exports = {
   blogsInDB,
   usersInDB,
   newUser,
+  anonymAuth,
 };
