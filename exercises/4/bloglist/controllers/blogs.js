@@ -1,8 +1,10 @@
 const blogsRouter = require('express').Router();
+const _ = require('lodash');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1, _id: 1 });
   response.json(blogs);
 });
 
@@ -26,6 +28,11 @@ blogsRouter.delete('/:id', async (request, response) => {
 });
 
 blogsRouter.post('/', async (request, response) => {
+  if (!_.has(request.body, 'user')) {
+    request.body.user = (await User.find({}))[0]._id;
+  }
+  console.log(request.body);
+
   const blog = new Blog(request.body);
   const savedBlog = await blog.save();
   response.status(201).json(savedBlog);

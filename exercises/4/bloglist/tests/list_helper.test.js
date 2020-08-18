@@ -23,7 +23,7 @@ describe('favorite blog', () => {
   });
   test('should be the one with most likes, and specific format', () => {
     const result = listHelper.favoriteBlog(testHelper.manyBlogs);
-    expect(result).toEqual(testHelper.favBlog);
+    expect(result).toEqual(expect.objectContaining(testHelper.favBlog));
   });
   test('should be the same one if list contains one blog', () => {
     const result = listHelper.favoriteBlog(testHelper.listWithOneBlog);
