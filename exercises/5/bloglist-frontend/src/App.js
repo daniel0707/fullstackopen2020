@@ -2,15 +2,24 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const emptyNewBlog = { title: '', author: '', url: '' }
+  const emptyNotification = { success: null, message: null }
   const [newBlog, setNewBlog] = useState(emptyNewBlog)
+  const [notification, setNotification] = useState(emptyNotification)
+
+  const notify = (success, message) => {
+    setNotification({ success: success, message: message })
+    setTimeout(() => {
+      setNotification(emptyNotification)
+    }, 3000)
+  }
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -40,15 +49,14 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      notify(true, `Welcome ${user.name}!`)
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      notify(false, 'Wrong credentials')
     }
   }
 
   const handleLogOut = () => {
+    notify(true, `Logged out ${user.name}`)
     window.localStorage.removeItem('loggedBlogUser')
     setUser(null)
   }
@@ -72,6 +80,10 @@ const App = () => {
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
         setNewBlog(emptyNewBlog)
+        setNotification({
+          success: true,
+          message: `A new blog ${blogObject.title} by ${blogObject.author} added`
+        })
       })
   }
   const loginForm = () => (
@@ -83,6 +95,7 @@ const App = () => {
           value={username}
           name="Username"
           onChange={({ target }) => setUsername(target.value)}
+          required
         />
       </div>
       <div>
@@ -92,6 +105,7 @@ const App = () => {
           value={password}
           name="Password"
           onChange={({ target }) => setPassword(target.value)}
+          required
         />
       </div>
       <button type="submit">login</button>
@@ -107,6 +121,7 @@ const App = () => {
             name="title"
             value={newBlog.title}
             onChange={handleBlogChange}
+            required
           />
         </label>
       </div>
@@ -117,6 +132,7 @@ const App = () => {
             name="author"
             value={newBlog.author}
             onChange={handleBlogChange}
+            required
           />
         </label>
         <div>
@@ -128,6 +144,7 @@ const App = () => {
             name="url"
             value={newBlog.url}
             onChange={handleBlogChange}
+            required
           />
         </label>
       </div>
@@ -138,6 +155,7 @@ const App = () => {
   if (user === null) {
     return (
       <div>
+        <Notification success={notification.success} message={notification.message} />
         <h2>Log in to application</h2>
         {loginForm()}
       </div>
@@ -146,6 +164,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification success={notification.success} message={notification.message} />
       <h2>blogs</h2>
       <div>
         {user.name} logged in
