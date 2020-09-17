@@ -3,21 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "*",
-    "@testing-library/react": "*",
-    "@testing-library/user-event": "*",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.0.4",
+    "@testing-library/user-event": "^12.1.5",
     "axios": "^0.19.2",
-    "react": "*",
-    "react-dom": "*",
-    "react-scripts": "*"
-  },
-  "devDependencies": {
-    "eslint": "*",
-    "eslint-config-airbnb": "*",
-    "eslint-plugin-import": "^*",
-    "eslint-plugin-jsx-a11y": "*",
-    "eslint-plugin-react": "*",
-    "eslint-plugin-react-hooks": "*"
+    "lodash": "^4.17.20",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.3"
   },
   "author": "Daniel Vahla",
   "license": "MIT",
