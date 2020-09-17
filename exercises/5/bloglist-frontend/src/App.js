@@ -5,6 +5,7 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import _ from 'lodash'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -129,7 +130,7 @@ const App = () => {
         {blogForm()}
       </div>
       <br />
-      {blogs.map(blog =>
+      {_.orderBy(blogs,['likes'],['desc']).map(blog =>
         <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs}/>
       )}
     </div>
