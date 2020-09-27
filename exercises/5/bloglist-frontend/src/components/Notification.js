@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const notificationStyleSuccess = {
   color: 'Green',
@@ -32,5 +33,8 @@ const Notification = ({ message, success }) => {
     </div>
   )
 }
-
+Notification.propTypes = {
+  message: PropTypes.string,
+  success: PropTypes.bool
+}
 export default Notification
