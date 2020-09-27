@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^12.1.5",
     "axios": "^0.19.2",
     "lodash": "^4.17.20",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.3"
@@ -36,5 +37,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:3001"
+  "proxy": "http://localhost:3001",
+  "devDependencies": {
+    "eslint-plugin-jest": "^24.0.2"
+  }
 }

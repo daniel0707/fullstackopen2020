@@ -5,11 +5,11 @@ const BlogForm = ({ createBlog }) => {
   const [newBlog, setNewBlog] = useState(emptyNewBlog)
 
   const handleBlogChange = (event) => {
-    const value = event.target.value;
+    const value = event.target.value
     setNewBlog({
       ...newBlog,
       [event.target.name]: value
-    });
+    })
   }
 
   const addBlog = (event) => {

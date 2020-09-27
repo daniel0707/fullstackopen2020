@@ -26,7 +26,7 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
   const removeBlog = async () => {
     if (window.confirm(`Are you sure you want to delete "${blog.title}"?`)) {
       await blogService.remove(blog.id)
-      setBlogs(_.reject(blogs,i=>i.id===blog.id))
+      setBlogs(_.reject(blogs,i => i.id===blog.id))
     }
   }
   if (showDetails) {
