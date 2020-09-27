@@ -131,7 +131,7 @@ const App = () => {
       </div>
       <br />
       {_.orderBy(blogs,['likes'],['desc']).map(blog =>
-        <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs}/>
+        <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} user={user}/>
       )}
     </div>
   )

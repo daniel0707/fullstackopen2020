@@ -10,7 +10,7 @@ const blogStyle = {
   marginBottom: 5
 }
 
-const Blog = ({ blog, blogs, setBlogs }) => {
+const Blog = ({ blog, blogs, setBlogs, user }) => {
   const [showDetails, setShowDetails] = useState(false)
   const toggleDetails = () => {
     setShowDetails(!showDetails)
@@ -22,6 +22,12 @@ const Blog = ({ blog, blogs, setBlogs }) => {
       user: blog.user.id
     })
     setBlogs(_.map(blogs,i => i.id === blog.id ? _.set(i, 'likes', i.likes + 1) : i))
+  }
+  const removeBlog = async () => {
+    if (window.confirm(`Are you sure you want to delete "${blog.title}"?`)) {
+      await blogService.remove(blog.id)
+      setBlogs(_.reject(blogs,i=>i.id===blog.id))
+    }
   }
   if (showDetails) {
     return (
@@ -35,6 +41,11 @@ const Blog = ({ blog, blogs, setBlogs }) => {
         <button onClick={likeBlog}>like</button>
         <br />
         {blog.author}
+        <br />
+        {
+          user.username === blog.user.username &&
+          <button onClick={removeBlog}>remove</button>
+        }
       </div>
     )
   } else {

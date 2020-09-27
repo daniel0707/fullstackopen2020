@@ -36,6 +36,11 @@ blogsRouter.delete('/:id', async (request, response) => {
 
   if (user._id.toString() === blogToDelete.user._id.toString()) {
     await Blog.findByIdAndRemove(request.params.id);
+    await User.findByIdAndUpdate(decodedToken.id, {
+      $pull: {
+        blogs: request.params.id,
+      },
+    });
     response.status(204).end();
   } else {
     response.status(401).send({ error: 'Unauthorized!' });
