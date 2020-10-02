@@ -32,7 +32,7 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
   }
   if (showDetails) {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} className='blog'>
         {blog.title}
         <button onClick={toggleDetails}>hide</button>
         <br />
@@ -51,8 +51,8 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
     )
   } else {
     return (
-      <div style={blogStyle}>
-        {blog.title} {blog.author}<button onClick={toggleDetails}>view</button>
+      <div style={blogStyle} className='blog'>
+        {blog.title} {blog.author}<button onClick={toggleDetails} className="toggleButton">view</button>
       </div>
     )
   }
