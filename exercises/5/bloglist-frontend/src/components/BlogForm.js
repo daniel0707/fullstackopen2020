@@ -14,7 +14,7 @@ const BlogForm = ({ createBlog }) => {
   }
 
   const addBlog = (event) => {
-    event.preventDevault()
+    event.preventDefault()
     createBlog({
       title: newBlog.title,
       author: newBlog.author,
@@ -24,10 +24,11 @@ const BlogForm = ({ createBlog }) => {
   }
 
   return (
-    <form onSubmit={addBlog}>
-      <div>
+    <div className='formDiv'>
+      <form onSubmit={addBlog} id='blogForm'>
         <label>title:
           <input
+            id='title'
             type="text"
             name="title"
             value={newBlog.title}
@@ -35,10 +36,9 @@ const BlogForm = ({ createBlog }) => {
             required
           />
         </label>
-      </div>
-      <div>
         <label>author:
           <input
+            id='author'
             type="text"
             name="author"
             value={newBlog.author}
@@ -46,11 +46,9 @@ const BlogForm = ({ createBlog }) => {
             required
           />
         </label>
-        <div>
-        </div>
-
         <label>url:
           <input
+            id='url'
             type="text"
             name="url"
             value={newBlog.url}
@@ -58,9 +56,9 @@ const BlogForm = ({ createBlog }) => {
             required
           />
         </label>
-      </div>
-      <button type="submit">create</button>
-    </form>
+        <button type="submit" id="submitButton">create</button>
+      </form>
+    </div>
   )
 }
 BlogForm.propTypes = {
