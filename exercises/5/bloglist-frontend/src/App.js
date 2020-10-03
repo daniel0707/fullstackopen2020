@@ -37,6 +37,21 @@ const App = () => {
     }
   }, [])
 
+  const likeBlog = async (blog) => {
+    await blogService.update(blog.id, {
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user.id
+    })
+    setBlogs(_.map(blogs,i => i.id === blog.id ? _.set(i, 'likes', i.likes + 1) : i))
+  }
+  const removeBlog = async (blog) => {
+    if (window.confirm(`Are you sure you want to delete "${blog.title}"?`)) {
+      await blogService.remove(blog.id)
+      setBlogs(_.reject(blogs,i => i.id===blog.id))
+    }
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -131,7 +146,7 @@ const App = () => {
       </div>
       <br />
       {_.orderBy(blogs,['likes'],['desc']).map(blog =>
-        <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} user={user}/>
+        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} removeBlog={removeBlog} user={user}/>
       )}
     </div>
   )

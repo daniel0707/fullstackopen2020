@@ -39,3 +39,22 @@ test('details show after button click', () => {
   expect(component.container).toHaveTextContent('20')
   expect(component.container).toHaveTextContent('https://reactpatterns.com/')
 })
+
+test('clicking the button calls event handler twice', () => {
+  const mockHandler = jest.fn()
+
+  const component = render(
+    <Blog blog={blog} user={user} likeBlog={mockHandler} removeBlog={mockHandler}/>
+  )
+
+  const toggleButton = component.container.querySelector('.toggleButton')
+  fireEvent.click(toggleButton)
+
+  const likeButton = component.container.querySelector('.likeButton')
+  fireEvent.click(likeButton)
+  fireEvent.click(likeButton)
+
+  expect(mockHandler).toHaveBeenCalledTimes(2)
+
+
+})

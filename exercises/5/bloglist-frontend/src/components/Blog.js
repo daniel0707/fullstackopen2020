@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import blogService from './../services/blogs'
-import _ from 'lodash'
 import PropTypes from 'prop-types'
 
 const blogStyle = {
@@ -11,25 +9,12 @@ const blogStyle = {
   marginBottom: 5
 }
 
-const Blog = ({ blog, blogs, setBlogs, user }) => {
+const Blog = ({ blog, user , likeBlog, removeBlog }) => {
   const [showDetails, setShowDetails] = useState(false)
   const toggleDetails = () => {
     setShowDetails(!showDetails)
   }
-  const likeBlog = async () => {
-    await blogService.update(blog.id, {
-      ...blog,
-      likes: blog.likes + 1,
-      user: blog.user.id
-    })
-    setBlogs(_.map(blogs,i => i.id === blog.id ? _.set(i, 'likes', i.likes + 1) : i))
-  }
-  const removeBlog = async () => {
-    if (window.confirm(`Are you sure you want to delete "${blog.title}"?`)) {
-      await blogService.remove(blog.id)
-      setBlogs(_.reject(blogs,i => i.id===blog.id))
-    }
-  }
+
   if (showDetails) {
     return (
       <div style={blogStyle} className='blog'>
@@ -39,7 +24,7 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
         {blog.url}
         <br />
         {blog.likes}
-        <button onClick={likeBlog}>like</button>
+        <button onClick={likeBlog} className="likeButton">like</button>
         <br />
         {blog.author}
         <br />
