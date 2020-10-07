@@ -37,7 +37,7 @@ const App = () => {
     }
   }, [])
 
-  const likeBlog = async (blog) => {
+  const likeBlog = (blog) => async() => {
     await blogService.update(blog.id, {
       ...blog,
       likes: blog.likes + 1,
@@ -45,7 +45,7 @@ const App = () => {
     })
     setBlogs(_.map(blogs,i => i.id === blog.id ? _.set(i, 'likes', i.likes + 1) : i))
   }
-  const removeBlog = async (blog) => {
+  const removeBlog = (blog) => async () => {
     if (window.confirm(`Are you sure you want to delete "${blog.title}"?`)) {
       await blogService.remove(blog.id)
       setBlogs(_.reject(blogs,i => i.id===blog.id))
@@ -138,7 +138,7 @@ const App = () => {
       <h2>blogs</h2>
       <div>
         {user.name} logged in
-        <button onClick={handleLogOut}>Log Out</button>
+        <button onClick={handleLogOut}>log out</button>
       </div>
       <h3>create new</h3>
       <div>
@@ -146,7 +146,7 @@ const App = () => {
       </div>
       <br />
       {_.orderBy(blogs,['likes'],['desc']).map(blog =>
-        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} removeBlog={removeBlog} user={user}/>
+        <Blog key={blog.id} blog={blog} likeBlog={likeBlog(blog)} removeBlog={removeBlog(blog)} user={user}/>
       )}
     </div>
   )
