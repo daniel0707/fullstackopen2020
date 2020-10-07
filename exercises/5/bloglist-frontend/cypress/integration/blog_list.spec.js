@@ -1,3 +1,4 @@
+const { _ } = Cypress
 describe('Blog app', function () {
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3001/api/testing/reset')
@@ -54,7 +55,7 @@ describe('Blog app', function () {
       it('User can like a blog', function () {
         cy.contains('E2E testing').as('firstBlog').find('button').click()
         cy.get('@firstBlog').contains('like').click()
-        cy.get('@firstBlog').find('#blog-likes').should('contain.text','2')
+        cy.get('@firstBlog').find('.blog-likes').should('contain.text','2')
       })
       it('Blog can be deleted', function () {
         cy.contains('E2E testing').as('firstBlog').find('button').click()
@@ -81,6 +82,31 @@ describe('Blog app', function () {
             expect(r.body).to.have.ownProperty('error')
           }))
         })
+      })
+      it('Blogs should be in order of likes', function () {
+        cy.root().find('.toggleButton').then((buttons) => {
+          for (const btn of buttons) {
+            btn.click()
+          }
+        })
+        cy.root().find('.blog-likes')
+          .then((blogs) => _.map(blogs, 'innerText'))
+          .then((blogText) => _.map(blogText, Number))
+          .then((blogLikes) => {
+            const sorted = _.sortBy(blogLikes,['desc'])
+
+            expect(blogLikes, 'blogs are sorted descending').to.deep.equal(sorted)
+          })
+        //Like the leas like blog many times to check if it re-arranged to be first
+        cy.contains('E2E').parent().find('.likeButton').as('repeatLike')
+        _.times(10, () => cy.get('@repeatLike').click())
+        cy.root().find('.blog-likes')
+          .then((blogs) => _.map(blogs, 'innerText'))
+          .then((blogText) => _.map(blogText, Number))
+          .then((blogLikes) => {
+            const sorted = _.sortBy(blogLikes,['desc'])
+            expect(blogLikes, 'blogs are sorted descending after liking a blog').to.deep.equal(sorted)
+          })
       })
     })
   })
