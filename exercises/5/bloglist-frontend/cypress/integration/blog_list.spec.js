@@ -1,4 +1,4 @@
-describe('Note app', function () {
+describe('Blog app', function () {
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3001/api/testing/reset')
     const user = {
@@ -29,6 +29,22 @@ describe('Note app', function () {
       cy.get('.error')
         .should('contain', 'Wrong credentials')
         .and('have.css', 'color', 'rgb(255, 0, 0)') //red
+    })
+  })
+  describe.only('When logged in', function () {
+    beforeEach(function () {
+      cy.login({ username: 'tester',password:'test123' })
+    })
+
+    it('A blog can be created', function () {
+      cy.contains('new blog').click()
+      cy.get('#author').type('Cypress')
+      cy.get('#title').type('E2E testing automation')
+      cy.get('#url').type('localhost')
+      cy.get('#submitButton').click()
+
+      cy.contains('A new blog E2E testing automation by Cypress added')
+      cy.get('.blog').contains('E2E testing automation')
     })
   })
 })
