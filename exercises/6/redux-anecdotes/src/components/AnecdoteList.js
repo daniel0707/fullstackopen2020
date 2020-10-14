@@ -5,7 +5,7 @@ import _ from 'lodash'
 
 const AnecdoteList = (props) => {
   const dispatch = useDispatch()
-  const anecdotes = useSelector(state => state)
+  const anecdotes = useSelector(state => state.anecdotes)
 
   return (
       _.orderBy(anecdotes, ['votes'], 'desc').map(anecdote =>
