@@ -7,23 +7,27 @@ import _ from 'lodash'
 const AnecdoteList = (props) => {
   const dispatch = useDispatch()
   const anecdotes = useSelector(state => state.anecdotes)
+  const filter = useSelector(state => state.filter)
   const vote = (anecdote)=>() => {
     dispatch(voteAnecdote(anecdote.id))
     dispatch(createNotification(`You voted on - ${anecdote.content}`))
     setTimeout(dispatch(createNotification(''),5000))
   }
   return (
-      _.orderBy(anecdotes, ['votes'], 'desc').map(anecdote =>
-      <div key={anecdote.id}>
-        <div>
-          {anecdote.content}
+    _.chain(anecdotes)
+      .filter(a => { return filter ? _.includes(_.lowerCase(a.content), filter) : true })
+      .orderBy(['votes'], 'desc')
+      .map(anecdote =>
+        <div key={anecdote.id}>
+          <div>
+            {anecdote.content}
+          </div>
+          <div>
+            has {anecdote.votes}
+              <button onClick={vote(anecdote)}>vote</button>
+          </div>
         </div>
-        <div>
-          has {anecdote.votes}
-            <button onClick={vote(anecdote)}>vote</button>
-        </div>
-      </div>
-    )
+    ).value()
   )
 }
 
