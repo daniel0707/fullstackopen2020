@@ -7,10 +7,10 @@ const notificationReducer = (state = 'Test notification', action) => {
   }
 }
 
-const createNotification = (notification) => {
+export const createNotification = (notification) => {
   return {
-    type: 'SET_NOTIFICATON',
-    notification
+    type: 'SET_NOTIFICATION',
+    notification: notification
   }
 }
 
