@@ -5,7 +5,8 @@ module.exports = {
   },
   "extends": [ 
       "eslint:recommended",
-        "plugin:react/recommended"
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended"
     ],
   "parserOptions": {
       "ecmaFeatures": {
@@ -44,5 +45,10 @@ module.exports = {
       ],
       "no-console": 0,
       "react/prop-types": 0
-  }
+    },
+    "settings": {
+        "react": {
+            "version": "detect",
+        },
+    }
 }
