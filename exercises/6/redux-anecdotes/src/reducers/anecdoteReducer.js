@@ -7,7 +7,6 @@ const reducer = (state = [], action) => {
   case 'INIT_ANECDOTES':
     return action.data
   case 'VOTE_ANECDOTE': {
-    console.log(action)
     const id = action.data.id
     return state.map(a => a.id !== id ? a : action.data)
   }
