@@ -4,14 +4,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import { createNotification } from '../reducers/notificationReducer'
 import _ from 'lodash'
 
-const AnecdoteList = (props) => {
+const AnecdoteList = () => {
   const dispatch = useDispatch()
   const anecdotes = useSelector(state => state.anecdotes)
   const filter = useSelector(state => state.filter)
-  const vote = (anecdote)=>() => {
+  const vote = (anecdote) => () => {
     dispatch(voteAnecdote(anecdote.id))
     dispatch(createNotification(`You voted on - ${anecdote.content}`))
-    setTimeout(dispatch(createNotification(''),5000))
+    setTimeout(() => {
+      dispatch(createNotification(''))
+    }, 5000)
   }
   return (
     _.chain(anecdotes)
@@ -24,10 +26,10 @@ const AnecdoteList = (props) => {
           </div>
           <div>
             has {anecdote.votes}
-              <button onClick={vote(anecdote)}>vote</button>
+            <button onClick={vote(anecdote)}>vote</button>
           </div>
         </div>
-    ).value()
+      ).value()
   )
 }
 
