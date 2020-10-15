@@ -57,8 +57,11 @@ blogsRouter.post('/', async (request, response) => {
   }
   const user = await User.findById(decodedToken.id);
   const blog = new Blog(_.set(request.body, 'user', user._id));
-  const savedBlog = await blog.save().populate('user', { username: 1, name: 1, _id: 1 });
-  response.status(201).json(savedBlog);
+  const savedBlog = await blog.save();
+  user.blogs = user.blogs.concat(savedBlog._id);
+  await user.save();
+  const resp = await Blog.findById(savedBlog._id).populate('user', { name: 1 });
+  response.status(201).json(resp);
 });
 
 module.exports = blogsRouter;

@@ -18,15 +18,15 @@ const Blog = ({ blog, user , likeBlog, removeBlog }) => {
   if (showDetails) {
     return (
       <div style={blogStyle} className='blog'>
-        {blog.title}
+        <span className='blog-title'>{blog.title}</span>
         <button onClick={toggleDetails}>hide</button>
         <br />
-        {blog.url}
+        <span className='blog-url'>{blog.url}</span>
         <br />
-        {blog.likes}
+        <span className='blog-likes'>{blog.likes}</span>
         <button onClick={likeBlog} className="likeButton">like</button>
         <br />
-        {blog.author}
+        <span className='blog-author'>{blog.author}</span>
         <br />
         {
           user.username === blog.user.username &&
