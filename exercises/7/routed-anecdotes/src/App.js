@@ -3,7 +3,8 @@ import {
   Switch,
   Route,
   Link,
-  useRouteMatch
+  useRouteMatch,
+  useHistory
 } from "react-router-dom"
 
 const Menu = () => {
@@ -34,7 +35,6 @@ const AnecdoteList = ({ anecdotes }) => (
 )
 
 const Anecdote = ({ anecdote }) => {
-  console.log(anecdote)
   return (
     <div>
       <h2>{anecdote.content} by {anecdote.author}</h2>
@@ -70,6 +70,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+  const history = useHistory()
 
 
   const handleSubmit = (e) => {
@@ -80,6 +81,11 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    props.notify(`a new anecdote "${content}" created!`)
+    setTimeout(() => {
+      props.notify('')
+    },10000)
+    history.push('/')
   }
 
   return (
@@ -104,7 +110,16 @@ const CreateNew = (props) => {
   )
 
 }
-
+const Notification = ({ note }) => {
+  if (note) {
+    return (
+      <div>
+        {note}
+      </div>
+    )
+  }
+  return null
+}
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -129,11 +144,11 @@ const App = () => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
   }
-
+/*
   const anecdoteById = (id) =>
     anecdotes.find(a => a.id === id)
 
-  const vote = (id) => {
+   const vote = (id) => {
     const anecdote = anecdoteById(id)
 
     const voted = {
@@ -142,7 +157,7 @@ const App = () => {
     }
 
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
-  }
+  } */
   const match = useRouteMatch('/anecdotes/:id')
   const anecdote = match
     ? anecdotes.find(a => a.id === match.params.id)
@@ -151,6 +166,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      <Notification note={notification}/>
       <Switch>
         <Route path="/anecdotes/:id">
           <Anecdote anecdote={anecdote}/>
@@ -159,7 +175,7 @@ const App = () => {
           <AnecdoteList anecdotes={anecdotes}/>
         </Route>
         <Route path="/create">
-          <CreateNew addNew={addNew}/>
+          <CreateNew addNew={addNew} notify={setNotification}/>
         </Route>
         <Route path="/about">
           <About/>
