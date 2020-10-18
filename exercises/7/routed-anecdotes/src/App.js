@@ -5,7 +5,7 @@ import {
   Link,
   useRouteMatch,
   useHistory
-} from "react-router-dom"
+} from 'react-router-dom'
 
 const Menu = () => {
   const padding = {
@@ -28,7 +28,7 @@ const AnecdoteList = ({ anecdotes }) => (
         anecdotes.map(anecdote =>
           <li key={anecdote.id} >
             <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
-            </li>)
+          </li>)
       }
     </ul>
   </div>
@@ -38,10 +38,10 @@ const Anecdote = ({ anecdote }) => {
   return (
     <div>
       <h2>{anecdote.content} by {anecdote.author}</h2>
-    <div>has {anecdote.votes} votes</div>
-    <div>for more info see <a href={anecdote.info}>{anecdote.info}</a></div>
-  </div>   
-    )
+      <div>has {anecdote.votes} votes</div>
+      <div>for more info see <a href={anecdote.info}>{anecdote.info}</a></div>
+    </div>
+  )
 }
 
 const About = () => (
@@ -52,7 +52,7 @@ const About = () => (
     <em>An anecdote is a brief, revealing account of an individual person or an incident.
       Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
       such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
-      An anecdote is "a story with a point."</em>
+      An anecdote is a story with a point.</em>
 
     <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
   </div>
@@ -102,7 +102,7 @@ const CreateNew = (props) => {
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
         </div>
         <button>create</button>
       </form>
@@ -144,7 +144,7 @@ const App = () => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
   }
-/*
+  /*
   const anecdoteById = (id) =>
     anecdotes.find(a => a.id === id)
 
@@ -189,4 +189,4 @@ const App = () => {
   )
 }
 
-export default App;
+export default App

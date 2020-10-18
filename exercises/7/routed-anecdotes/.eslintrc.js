@@ -6,7 +6,6 @@ module.exports = {
     "extends": [ 
         "eslint:recommended",
         "plugin:react/recommended",
-        "plugin:react-hooks/recommended"
       ],
     "parserOptions": {
         "ecmaFeatures": {
@@ -16,7 +15,7 @@ module.exports = {
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react","react-hooks"
     ],
     "rules": {
         "indent": [
@@ -44,7 +43,9 @@ module.exports = {
             "error", { "before": true, "after": true }
         ],
         "no-console": 0,
-        "react/prop-types": 0
+        "react/prop-types": 0,
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn"
       },
       "settings": {
           "react": {
