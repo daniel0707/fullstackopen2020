@@ -1,20 +1,6 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import {
-  AppBar,
-  Container,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  TextField,
-  Toolbar,
-  IconButton,
-  Button,
-  Paper, }  from '@material-ui/core'
-import { Alert } from '@material-ui/lab'
-import {
   BrowserRouter as Router,
   Switch,
   Route,
@@ -23,6 +9,35 @@ import {
   useRouteMatch,
   useHistory,
 } from "react-router-dom"
+import styled from 'styled-components'
+
+const Page = styled.div`
+  padding: 1em;
+  background: papayawhip;
+`
+
+const Navigation = styled.div`
+  background: BurlyWood;
+  padding: 1em;
+`
+
+const Footer = styled.div`
+  background: Chocolate;
+  padding: 1em;
+  margin-top: 1em;
+`
+const Button = styled.button`
+  background: Bisque;
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: 2px solid Chocolate;
+  border-radius: 3px;
+`
+
+const Input = styled.input`
+  margin: 0.25em;
+`
 
 const Home = () => (
   <div> 
@@ -44,23 +59,13 @@ const Note = ({ note }) => {
 const Notes = ({notes}) => (
   <div>
     <h2>Notes</h2>
-
-    <TableContainer component={Paper}>
-      <Table>
-        <TableBody>
-          {notes.map(note => (
-            <TableRow key={note.id}>
-              <TableCell>
-                <Link to={`/notes/${note.id}`}>{note.content}</Link>
-              </TableCell>
-              <TableCell>
-                {note.name}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <ul>
+      {notes.map(note =>
+        <li key={note.id}>
+          <Link to={`/notes/${note.id}`}>{note.content}</Link>
+        </li>
+      )}
+    </ul>
   </div>
 )
 
@@ -89,16 +94,14 @@ const Login = (props) => {
       <h2>login</h2>
       <form onSubmit={onSubmit}>
         <div>
-          <TextField label="username" />
+          username:
+          <Input />
         </div>
         <div>
-          <TextField  label="password" type='password' />
+          password:
+          <Input type='password' />
         </div>
-        <div>
-          <Button variant="contained" color="primary" type="submit">
-            login
-          </Button>
-        </div>
+        <Button type="submit" primary=''>login</Button>
       </form>
     </div>
   )
@@ -136,66 +139,53 @@ const App = () => {
       setMessage(null)
     }, 10000)
   }
-  
-    const match = useRouteMatch('/notes/:id')
-    const note = match
-      ? notes.find(note => note.id === Number(match.params.id))
-      : null
 
-    return (
-      <Container>
-        <div>
-        {(message &&
-    <Alert severity="success">
-      {message}
-    </Alert>
-  )}
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton edge="start" color="inherit" aria-label="menu">
-            </IconButton>
-            <Button color="inherit">
-              <Link to="/">home</Link>
-            </Button>
-            <Button color="inherit">
-              <Link to="/notes">notes</Link>
-            </Button>
-            <Button color="inherit">
-              <Link to="/users">users</Link>
-            </Button>  
-            <Button color="inherit">
-              {user
-                ? <em>{user} logged in</em>
-                : <Link to="/login">login</Link>
-              }
-            </Button>                
-          </Toolbar>
-        </AppBar>
-          <Switch>
-            <Route path="/notes/:id">
-              <Note note={note} />
-            </Route>
-            <Route path="/notes">
-              <Notes notes={notes} />
-            </Route>
-            <Route path="/users">
-              {user ? <Users /> : <Redirect to="/login" />}
-            </Route>
-            <Route path="/login">
-              <Login onLogin={login} />
-            </Route>
-            <Route path="/">
-              <Home />
-            </Route>
-          </Switch>
-          <div>
-            <br />
-            <em>Note app, Department of Computer Science 2020</em>
-          </div>
-        </div>
-      </Container>
-    )
+  const padding = {
+    padding: 5
+  }
+
+  const match = useRouteMatch('/notes/:id')
+  const note = match 
+    ? notes.find(note => note.id === Number(match.params.id))
+    : null
+
+  return (
+    <Page>
+      <Navigation>
+        <Link style={padding} to="/">home</Link>
+        <Link style={padding} to="/notes">notes</Link>
+        <Link style={padding} to="/users">users</Link>
+        {user
+          ? <em>{user} logged in</em>
+          : <Link style={padding} to="/login">login</Link>
+        }
+      </Navigation>
+
+      <Switch>
+        <Route path="/notes/:id">
+          <Note note={note} />
+        </Route>
+        <Route path="/notes">
+          <Notes notes={notes} />
+        </Route>
+        <Route path="/users">
+          {user ? <Users /> : <Redirect to="/login" />}
+        </Route>
+        <Route path="/login">
+          <Login onLogin={login} />
+        </Route>
+        <Route path="/">
+          <Home />
+        </Route>
+      </Switch>
+      <Footer>
+        <br />
+        <em>Note app, Department of Computer Science 2020</em>
+        </Footer>
+    </Page>
+  )
 }
+
 
 ReactDOM.render(
   <Router>
