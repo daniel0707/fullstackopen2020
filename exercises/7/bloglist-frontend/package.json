@@ -6,12 +6,16 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.0.4",
     "@testing-library/user-event": "^12.1.5",
-    "axios": "^0.19.2",
+    "axios": "^0.20.0",
     "lodash": "^4.17.20",
     "prop-types": "^15.7.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.3"
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-redux": "^7.2.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^3.4.4",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
   },
   "author": "Daniel Vahla",
   "license": "MIT",
@@ -43,6 +47,7 @@
   "devDependencies": {
     "cypress": "^5.3.0",
     "eslint-plugin-cypress": "^2.11.2",
-    "eslint-plugin-jest": "^24.0.2"
+    "eslint-plugin-jest": "^24.0.2",
+    "redux-devtools-extension": "^2.13.8"
   }
 }

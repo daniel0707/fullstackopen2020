@@ -5,6 +5,8 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import { createNotification } from './reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
 import _ from 'lodash'
 
 const App = () => {
@@ -12,16 +14,8 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const emptyNotification = { success: null, message: null }
-  const [notification, setNotification] = useState(emptyNotification)
   const blogFormRef = useRef()
-
-  const notify = (success, message) => {
-    setNotification({ success: success, message: message })
-    setTimeout(() => {
-      setNotification(emptyNotification)
-    }, 3000)
-  }
+  const dispatch = useDispatch()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -66,14 +60,14 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      notify(true, `Welcome ${user.name}!`)
+      dispatch(createNotification(`Welcome ${user.name}!`,true))
     } catch (exception) {
-      notify(false, 'Wrong credentials')
+      dispatch(createNotification('Wrong credentials',false))
     }
   }
 
   const handleLogOut = () => {
-    notify(true, `Logged out ${user.name}`)
+    dispatch(createNotification(`Logged out ${user.name}`, true))
     window.localStorage.removeItem('loggedBlogUser')
     setUser(null)
   }
@@ -84,10 +78,10 @@ const App = () => {
       .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
-        setNotification({
-          success: true,
-          message: `A new blog ${blogObject.title} by ${blogObject.author} added`
-        })
+        dispatch(createNotification(
+          `A new blog ${blogObject.title} by ${blogObject.author} added`,
+          true
+        ))
       })
   }
   const loginForm = () => (
@@ -125,7 +119,7 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <Notification success={notification.success} message={notification.message} />
+        <Notification/>
         <h2>Log in to application</h2>
         {loginForm()}
       </div>
@@ -134,7 +128,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification success={notification.success} message={notification.message} />
+      <Notification/>
       <h2>blogs</h2>
       <div>
         {user.name} logged in
