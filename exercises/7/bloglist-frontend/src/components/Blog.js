@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { likeBlog, removeBlog } from '../reducers/blogReducer'
 
 const blogStyle = {
   paddingTop: 10,
@@ -9,12 +11,16 @@ const blogStyle = {
   marginBottom: 5
 }
 
-const Blog = ({ blog, user , likeBlog, removeBlog }) => {
+const Blog = ({ blog, user }) => {
+  const dispatch = useDispatch()
+  const removeBlogConfirm = (blog) => () => {
+    if (window.confirm(`Are you sure you want to delete "${blog.title}"?`))
+    { dispatch(removeBlog(blog)) }
+  }
   const [showDetails, setShowDetails] = useState(false)
   const toggleDetails = () => {
     setShowDetails(!showDetails)
   }
-
   if (showDetails) {
     return (
       <div style={blogStyle} className='blog'>
@@ -24,13 +30,13 @@ const Blog = ({ blog, user , likeBlog, removeBlog }) => {
         <span className='blog-url'>{blog.url}</span>
         <br />
         <span className='blog-likes'>{blog.likes}</span>
-        <button onClick={likeBlog} className="likeButton">like</button>
+        <button onClick={() => dispatch(likeBlog(blog))} className="likeButton">like</button>
         <br />
         <span className='blog-author'>{blog.author}</span>
         <br />
         {
           user.username === blog.user.username &&
-          <button onClick={removeBlog}>remove</button>
+          <button onClick={removeBlogConfirm(blog)}>remove</button>
         }
       </div>
     )
@@ -64,4 +70,5 @@ Blog.propTypes = {
     url: PropTypes.string,
   }))
 }
+
 export default Blog

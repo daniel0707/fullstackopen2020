@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import BlogList from './components/BlogList'
 import { createNotification } from './reducers/notificationReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 import { useDispatch } from 'react-redux'
-import _ from 'lodash'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -18,10 +18,9 @@ const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
     if (loggedUserJSON) {
@@ -31,20 +30,7 @@ const App = () => {
     }
   }, [])
 
-  const likeBlog = (blog) => async() => {
-    await blogService.update(blog.id, {
-      ...blog,
-      likes: blog.likes + 1,
-      user: blog.user.id
-    })
-    setBlogs(_.map(blogs,i => i.id === blog.id ? _.set(i, 'likes', i.likes + 1) : i))
-  }
-  const removeBlog = (blog) => async () => {
-    if (window.confirm(`Are you sure you want to delete "${blog.title}"?`)) {
-      await blogService.remove(blog.id)
-      setBlogs(_.reject(blogs,i => i.id===blog.id))
-    }
-  }
+
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -138,10 +124,7 @@ const App = () => {
       <div>
         {blogForm()}
       </div>
-      <br />
-      {_.orderBy(blogs,['likes'],['desc']).map(blog =>
-        <Blog key={blog.id} blog={blog} likeBlog={likeBlog(blog)} removeBlog={removeBlog(blog)} user={user}/>
-      )}
+      <BlogList user={user}/>
     </div>
   )
 }
