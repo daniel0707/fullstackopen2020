@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 
 const blogStyle = {
@@ -11,7 +11,8 @@ const blogStyle = {
   marginBottom: 5
 }
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
+  const user = useSelector(state => state.login)
   const dispatch = useDispatch()
   const removeBlogConfirm = (blog) => () => {
     if (window.confirm(`Are you sure you want to delete "${blog.title}"?`))

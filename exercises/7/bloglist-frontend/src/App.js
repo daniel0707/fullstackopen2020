@@ -7,15 +7,16 @@ import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
 import { createNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogReducer'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { loginUser, logoutUser } from './reducers/loginReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const blogFormRef = useRef()
   const dispatch = useDispatch()
+  const user = useSelector(state => state.login)
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -24,11 +25,11 @@ const App = () => {
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+      const loggedUser = JSON.parse(loggedUserJSON)
+      dispatch(loginUser(loggedUser))
+      blogService.setToken(loggedUser.token)
     }
-  }, [])
+  }, [dispatch])
 
 
 
@@ -43,7 +44,7 @@ const App = () => {
         'loggedBlogUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
-      setUser(user)
+      dispatch(loginUser(user))
       setUsername('')
       setPassword('')
       dispatch(createNotification(`Welcome ${user.name}!`,true))
@@ -55,7 +56,7 @@ const App = () => {
   const handleLogOut = () => {
     dispatch(createNotification(`Logged out ${user.name}`, true))
     window.localStorage.removeItem('loggedBlogUser')
-    setUser(null)
+    dispatch(logoutUser())
   }
 
   const addBlog = (blogObject) => {
@@ -102,7 +103,7 @@ const App = () => {
     </Togglable>
   )
 
-  if (user === null) {
+  if (user===null) {
     return (
       <div>
         <Notification/>
