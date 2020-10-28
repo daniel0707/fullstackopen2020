@@ -5,6 +5,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
+import Blog from './components/Blog'
 import User from './components/User'
 import { createNotification } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog } from './reducers/blogReducer'
@@ -21,13 +22,16 @@ const App = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.login)
   const users = useSelector(state => state.users)
+  const blogs = useSelector(state => state.blogs)
 
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch])
+
   useEffect(() => {
     dispatch(initUsers())
-  },[dispatch])
+  }, [dispatch])
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
     if (loggedUserJSON) {
@@ -36,8 +40,6 @@ const App = () => {
       blogService.setToken(loggedUser.token)
     }
   }, [dispatch])
-
-
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -104,7 +106,9 @@ const App = () => {
   )
 
   const userMatch = useRouteMatch('/users/:id')
-  const matchedUser = userMatch? users.find(u => u.id === userMatch.params.id) : null
+  const matchedUser = userMatch ? users.find(u => u.id === userMatch.params.id) : null
+  const blogMatch = useRouteMatch('/blogs/:id')
+  const matchedBlog = blogMatch ? blogs.find(b => b.id === blogMatch.params.id) : null
 
   if (user===null) {
     return (
@@ -119,7 +123,7 @@ const App = () => {
   return (
     <div>
       <Notification/>
-      <h2>blogs</h2>
+      <h2>Blog App</h2>
       <div>
         {user.name} logged in
         <button onClick={handleLogOut}>log out</button>
@@ -131,8 +135,13 @@ const App = () => {
         <Route path="/users">
           <UserList/>
         </Route>
+        <Route path="/blogs/:id">
+          <Blog blog={matchedBlog}/>
+        </Route>
+        <Route path="/blogs">
+          <BlogList/>
+        </Route>
         <Route path="/">
-          <h3>create new</h3>
           <div>
             {blogForm()}
           </div>
