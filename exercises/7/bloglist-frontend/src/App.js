@@ -5,12 +5,13 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
+import User from './components/User'
 import { createNotification } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser, logoutUser } from './reducers/loginReducer'
 import { initUsers } from './reducers/userReducer'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, useRouteMatch } from 'react-router-dom'
 import UserList from './components/UserList'
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
   const blogFormRef = useRef()
   const dispatch = useDispatch()
   const user = useSelector(state => state.login)
+  const users = useSelector(state => state.users)
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -101,6 +103,9 @@ const App = () => {
     </Togglable>
   )
 
+  const userMatch = useRouteMatch('/users/:id')
+  const matchedUser = userMatch? users.find(u => u.id === userMatch.params.id) : null
+
   if (user===null) {
     return (
       <div>
@@ -120,6 +125,9 @@ const App = () => {
         <button onClick={handleLogOut}>log out</button>
       </div>
       <Switch>
+        <Route path="/users/:id">
+          <User user={matchedUser}/>
+        </Route>
         <Route path="/users">
           <UserList/>
         </Route>

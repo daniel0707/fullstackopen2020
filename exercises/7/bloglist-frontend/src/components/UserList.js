@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import _ from 'lodash'
+import { Link } from 'react-router-dom'
 
 const UserList = () => {
   const users = useSelector(state => state.users)
@@ -18,7 +19,7 @@ const UserList = () => {
           {_.orderBy(users, [(a => a.blogs.length)], ['desc'])
             .map(user => (
               <tr key={user.id}>
-                <td>{user.name}</td>
+                <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
                 <td>{user.blogs.length}</td>
               </tr>
             ))}
