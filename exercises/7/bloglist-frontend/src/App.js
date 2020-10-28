@@ -9,6 +9,9 @@ import { createNotification } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser, logoutUser } from './reducers/loginReducer'
+import { initUsers } from './reducers/userReducer'
+import { Switch, Route } from 'react-router-dom'
+import UserList from './components/UserList'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -20,7 +23,9 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch])
-
+  useEffect(() => {
+    dispatch(initUsers())
+  },[dispatch])
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
     if (loggedUserJSON) {
@@ -114,11 +119,18 @@ const App = () => {
         {user.name} logged in
         <button onClick={handleLogOut}>log out</button>
       </div>
-      <h3>create new</h3>
-      <div>
-        {blogForm()}
-      </div>
-      <BlogList user={user}/>
+      <Switch>
+        <Route path="/users">
+          <UserList/>
+        </Route>
+        <Route path="/">
+          <h3>create new</h3>
+          <div>
+            {blogForm()}
+          </div>
+          <BlogList/>
+        </Route>
+      </Switch>
     </div>
   )
 }
