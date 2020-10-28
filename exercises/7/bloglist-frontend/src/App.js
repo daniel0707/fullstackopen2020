@@ -6,12 +6,11 @@ import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
 import { createNotification } from './reducers/notificationReducer'
-import { initializeBlogs } from './reducers/blogReducer'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser, logoutUser } from './reducers/loginReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const blogFormRef = useRef()
@@ -61,16 +60,10 @@ const App = () => {
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        dispatch(createNotification(
-          `A new blog ${blogObject.title} by ${blogObject.author} added`,
-          true
-        ))
-      })
+    dispatch(createBlog(blogObject))
+    dispatch(createNotification(`A new blog ${blogObject.title} by ${blogObject.author} added`,true))
   }
+
   const loginForm = () => (
     <form onSubmit={handleLogin} id='login-form'>
       <div>
