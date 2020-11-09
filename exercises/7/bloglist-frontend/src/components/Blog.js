@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 
-
-
 const Blog = ({ blog }) => {
   const user = useSelector(state => state.login)
   const dispatch = useDispatch()
@@ -30,6 +28,14 @@ const Blog = ({ blog }) => {
         user.username === blog.user.username &&
           <button onClick={removeBlogConfirm(blog)}>remove</button>
       }
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map((v, i) => (
+          <li key={i}>
+            {v}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 
