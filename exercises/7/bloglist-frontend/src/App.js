@@ -43,7 +43,7 @@ const App = () => {
 
   const Menu = () => {
     const style = {
-      background: 'gray',
+      background: 'LightGray',
       padding: '5'
     }
     return (
