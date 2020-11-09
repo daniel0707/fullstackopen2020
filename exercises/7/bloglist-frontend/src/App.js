@@ -12,7 +12,7 @@ import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser, logoutUser } from './reducers/loginReducer'
 import { initUsers } from './reducers/userReducer'
-import { Switch, Route, useRouteMatch } from 'react-router-dom'
+import { Switch, Route, useRouteMatch, Link } from 'react-router-dom'
 import UserList from './components/UserList'
 
 const App = () => {
@@ -40,6 +40,24 @@ const App = () => {
       blogService.setToken(loggedUser.token)
     }
   }, [dispatch])
+
+  const Menu = () => {
+    const style = {
+      background: 'gray',
+      padding: '5'
+    }
+    return (
+      <div style={style}>
+        <Link to='/'> home </Link>
+        <Link to='/blogs'> blogs </Link>
+        <Link to='/users'> users </Link>
+        <>
+          {user.name} logged in
+          <button onClick={handleLogOut}>log out</button>
+        </>
+      </div>
+    )
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -122,12 +140,9 @@ const App = () => {
 
   return (
     <div>
+      <Menu/>
       <Notification/>
       <h2>Blog App</h2>
-      <div>
-        {user.name} logged in
-        <button onClick={handleLogOut}>log out</button>
-      </div>
       <Switch>
         <Route path="/users/:id">
           <User user={matchedUser}/>
