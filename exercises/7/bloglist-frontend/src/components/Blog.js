@@ -1,19 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
-import { likeBlog, removeBlog } from '../reducers/blogReducer'
+import { likeBlog, removeBlog, commentBlog } from '../reducers/blogReducer'
 
 const Blog = ({ blog }) => {
   const user = useSelector(state => state.login)
+  const [newComment, setNewComment] = useState('')
   const dispatch = useDispatch()
   const removeBlogConfirm = (blog) => () => {
     if (window.confirm(`Are you sure you want to delete "${blog.title}"?`))
     { dispatch(removeBlog(blog)) }
   }
-
-  if (!blog) {
-    return null
+  const addComment = () => {
+    dispatch(commentBlog(blog.id,{ comment: newComment }))
+    setNewComment('')
   }
+  if (!blog) return null
   return (
     <div className='blog'>
       <h2 className='blog-title'>{blog.title}</h2>
@@ -29,6 +31,10 @@ const Blog = ({ blog }) => {
           <button onClick={removeBlogConfirm(blog)}>remove</button>
       }
       <h3>comments</h3>
+      <form onSubmit={addComment}>
+        <input value={newComment} onChange={(e) => setNewComment(e.target.value)} />
+        <button type="submit">add comment</button>
+      </form>
       <ul>
         {blog.comments.map((v, i) => (
           <li key={i}>
