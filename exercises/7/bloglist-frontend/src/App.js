@@ -12,8 +12,10 @@ import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser, logoutUser } from './reducers/loginReducer'
 import { initUsers } from './reducers/userReducer'
-import { Switch, Route, useRouteMatch, Link } from 'react-router-dom'
+import { Switch, Route, useRouteMatch, Link as ReactLink } from 'react-router-dom'
 import UserList from './components/UserList'
+import { Box, Flex, Input,Heading, Text, Button, Link, FormControl, FormLabel } from '@chakra-ui/core'
+
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -42,20 +44,25 @@ const App = () => {
   }, [dispatch])
 
   const Menu = () => {
-    const style = {
-      background: 'LightGray',
-      padding: '5'
-    }
     return (
-      <div style={style}>
-        <Link to='/'> home </Link>
-        <Link to='/blogs'> blogs </Link>
-        <Link to='/users'> users </Link>
-        <>
-          {user.name} logged in
-          <button onClick={handleLogOut}>log out</button>
-        </>
-      </div>
+      <Flex
+        w="100%"
+        px={5}
+        py={4}
+        justifyContent="space-between"
+        alignItems="center"
+        bg="teal.300"
+      >
+        <Box>
+          <Link as={ReactLink} to='/' px={2} color="blue.800"> home </Link>
+          <Link as={ReactLink} to='/blogs' px={2} color="blue.800"> blogs </Link>
+          <Link as={ReactLink} to='/users' px={2} color="blue.800"> users </Link>
+        </Box>
+        <Flex alignItems="center">
+          <Text>{user.name} logged in</Text>
+          <Button onClick={handleLogOut}>log out</Button>
+        </Flex>
+      </Flex>
     )
   }
 
@@ -92,7 +99,7 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <form onSubmit={handleLogin} id='login-form'>
+    /*     <form onSubmit={handleLogin} id='login-form'>
       <div>
         username
         <input
@@ -114,8 +121,32 @@ const App = () => {
         />
       </div>
       <button type="submit" id='login-button'>login</button>
-    </form>
+    </form> */
+    <Flex width="full" align="center" justifyContent="center">
+      <Box p={2}>
+        <Box textAlign="center">
+          <Heading>Login</Heading>
+        </Box>
+        <Box my={4} textAlign="left">
+          <form onSubmit={handleLogin} id='login-form'>
+            <FormControl isRequired>
+              <FormLabel>Username</FormLabel>
+              <Input type="text" placeholder="username" onChange={({ target }) => setUsername(target.value)}
+              />
+            </FormControl>
+            <FormControl isRequired mt={6}>
+              <FormLabel>Password</FormLabel>
+              <Input type="password" placeholder="*******" onChange={({ target }) => setPassword(target.value)}/>
+            </FormControl>
+            <Button type="submit" variantColor="teal" variant="outline" width="full" mt={4}>
+            Sign In
+            </Button>
+          </form>
+        </Box>
+      </Box>
+    </Flex>
   )
+
 
   const blogForm = () => (
     <Togglable buttonLabel='new blog' ref={blogFormRef}>
@@ -132,7 +163,6 @@ const App = () => {
     return (
       <div>
         <Notification/>
-        <h2>Log in to application</h2>
         {loginForm()}
       </div>
     )
@@ -142,7 +172,7 @@ const App = () => {
     <div>
       <Menu/>
       <Notification/>
-      <h2>Blog App</h2>
+      <Heading>Blog App</Heading>
       <Switch>
         <Route path="/users/:id">
           <User user={matchedUser}/>

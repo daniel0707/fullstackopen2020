@@ -2,26 +2,35 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import _ from 'lodash'
+import { Heading, List, ListItem } from '@chakra-ui/core'
 
 const BlogList = () => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 0,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
   const blogs = useSelector(state => state.blogs)
   return (
     <>
-      <h2>blogs</h2>
-      <ul style={{ 'listStyleType': 'none' , 'padding':'0' }}>
+      <Heading as='h3'>blogs</Heading>
+      <List styleType='disc'>
         {_.orderBy(blogs, ['likes'], ['desc'])
           .map(blog => (
-            <li style={blogStyle} key={blog.id}><Link to={`/blogs/${blog.id}`}>{blog.title}, {blog.author}</Link></li>
+            <ListItem key={blog.id}>
+              <Link to={`/blogs/${blog.id}`}
+                flex='1'
+                py={2}
+                px={4}
+                rounded='md'
+                bg='gray.100'
+                _hover={{ borderColor: 'gray.200', bg: 'gray.200' }}
+                _focus={{
+                  outline: 'none',
+                  bg: 'white',
+                  boxShadow: 'outline',
+                  borderColor: 'gray.300',
+                }}>
+                {blog.title}, {blog.author}</Link>
+            </ListItem>
           ))
         }
-      </ul>
+      </List>
     </>
   )}
 

@@ -11,7 +11,8 @@ const Blog = ({ blog }) => {
     if (window.confirm(`Are you sure you want to delete "${blog.title}"?`))
     { dispatch(removeBlog(blog)) }
   }
-  const addComment = () => {
+  const addComment = (e) => {
+    e.preventDefault()
     dispatch(commentBlog(blog.id,{ comment: newComment }))
     setNewComment('')
   }
