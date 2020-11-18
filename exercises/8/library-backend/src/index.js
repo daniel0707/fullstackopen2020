@@ -1,4 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server')
+const _ = require('lodash')
+const uuid = require('uuid').v4
 
 let authors = [
   {
@@ -92,6 +94,7 @@ const typeDefs = gql`
   }
   type Author {
     name: String!
+    born: Int
     books: Int!
   }
   type Query {
@@ -99,6 +102,14 @@ const typeDefs = gql`
     authorCount: Int!
     allBooks(author:String, genre:String): [Book!]!
     allAuthors: [Author!]!
+  }
+  type Mutation {
+    addBook(
+      title: String!
+      published: Int!
+      author: String!
+      genres: [String!]!
+    ): Book
   }
 
 `
@@ -127,6 +138,19 @@ const resolvers = {
         return sum
       }
     },0)
+  },
+  Mutation: {
+    addBook: (root, args) => {
+      if (!authors.includes(_.matchesProperty('name', args.author))) {
+        authors.push({
+          name: args.author,
+          id: uuid()
+        })
+      }
+      const book = { ...args, id: uuid() }
+      books.push(book)
+      return book
+    }
   }
 }
 
