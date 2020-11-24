@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { ALL_AUTHORS } from '../queries'
 import { useQuery } from '@apollo/client'
+import BirthForm from './BirthForm'
 
 const Authors = (props) => {
   const result = useQuery(ALL_AUTHORS)
@@ -11,6 +12,7 @@ const Authors = (props) => {
     if (result.data) {
       setAuthors(result.data.allAuthors)
     }
+    console.log("Updating authors...")
   },[result])
 
   if (!props.show) {
@@ -39,7 +41,7 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
-
+      <BirthForm/>
     </div>
   )
 }
