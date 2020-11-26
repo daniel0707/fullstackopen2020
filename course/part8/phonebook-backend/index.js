@@ -153,6 +153,7 @@ const resolvers = {
     }, 
     login: async (root, args) => {
       const users = await User.find({})
+      //console.log(users)
       const user = await User.findOne({ username: args.username })
   
       if ( !user || args.password !== 'secret' ) {

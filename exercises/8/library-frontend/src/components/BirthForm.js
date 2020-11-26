@@ -28,7 +28,7 @@ const BirthForm = ({authors}) => {
           <select value={name} 
             onChange={({ target }) => setName(target.value)}>
             {authors.map((a)=>
-              <option value={a.name}>{a.name}</option>
+              <option value={a.name} key={a.id}>{a.name}</option>
             )}
           </select>
         </label><br/>
