@@ -101,21 +101,39 @@ const resolvers = {
     }
   },
   Mutation: {
-    addBook: async(root,args,context,info) => {
-      const author = await Author.findOneAndUpdate(
-        { name: args.author },
-        { name: args.author },
-        { upsert: true, new: true, runValidators: true }
-      )
-      const newBook = new Book({ ...args, author: author._id })
-      return (await newBook.save()).populate('author').execPopulate()
+    addBook: async (root, args, context, info) => {
+      const session = await mongoose.startSession()
+      session.startTransaction()
+      try {
+        const author = await Author.findOneAndUpdate(
+          { name: args.author },
+          { name: args.author },
+          { upsert: true, new: true, runValidators: true, session:session }
+        ).exec()
+        const newBook = new Book({ ...args, author: author._id })
+        let res = await newBook.save({ session: session })
+        res = await res.execPopulate('author')
+        await session.commitTransaction()
+        session.endSession()
+        return res
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      }
     },
-    editAuthor: async(root, args) => {
-      return Author.findOneAndUpdate(
-        { name: args.name },
-        { born: args.setBornTo },
-        { new: true, runValidators: true}
-      )
+    editAuthor: async (root, args) => {
+      try {
+        return await Author.findOneAndUpdate(
+          { name: args.name },
+          { born: args.setBornTo },
+          { new: true, runValidators: true}
+        ).exec()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      }
     }
   }
 }
