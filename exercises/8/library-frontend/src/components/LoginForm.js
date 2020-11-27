@@ -6,7 +6,7 @@ import { LOGIN } from '../queries'
 const LoginForm = ({ show, setPage, setToken }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const findSelf = useLazyQuery(SELF)
+  const [findSelf, self] = useLazyQuery(SELF)
 
   const [ login,result ] = useMutation(LOGIN, {
     onError: (error) => {
