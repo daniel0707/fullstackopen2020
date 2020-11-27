@@ -12,7 +12,6 @@ const Authors = (props) => {
     if (result.data) {
       setAuthors(result.data.allAuthors)
     }
-    console.log("Updating authors...")
   },[result])
 
   if (!props.show) {
@@ -41,7 +40,7 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
-      <BirthForm authors={authors}/>
+      <BirthForm authors={authors} setPage={props.setPage}/>
     </div>
   )
 }
