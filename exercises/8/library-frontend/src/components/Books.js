@@ -12,7 +12,8 @@ const Books = (props) => {
   useEffect(() => {
     if (result.data) {
       setBooks(result.data.allBooks)
-      setGenres(_.chain(result.data.allBooks).reduce((acc, b) => acc.concat(...b.genres), [])
+      setGenres(_.chain(result.data.allBooks)
+        .reduce((acc, b) => acc.concat(...b.genres), [])
         .uniq()
         .value())
     }

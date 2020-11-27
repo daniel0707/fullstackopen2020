@@ -55,3 +55,12 @@ mutation editAuthor($name: String!, $setBornTo: Int!){
   }
 }
 `
+
+export const SELF = gql`
+query me{
+  me{
+    username
+    favoriteGenre
+  }
+}
+`
