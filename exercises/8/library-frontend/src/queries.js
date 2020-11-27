@@ -20,14 +20,15 @@ export const LOGIN = gql`
 `
 
 export const ALL_BOOKS = gql`
-query{
-  allBooks {
+query allBooks($genre: String){
+  allBooks(genre: $genre) {
     id
     title
     author{
       name
       }
     published
+    genres
   }
 }
 `

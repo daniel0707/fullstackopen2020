@@ -1,17 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import { useQuery } from '@apollo/client'
+import { useLazyQuery, useQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries'
+import _ from 'lodash'
 
 const Books = (props) => {
   const result = useQuery(ALL_BOOKS)
+  const [filterQuery, lazyResult] = useLazyQuery(ALL_BOOKS)
   const [books, setBooks] = useState([])
+  const [genres, setGenres] = useState([])
   
   useEffect(() => {
     if (result.data) {
       setBooks(result.data.allBooks)
+      setGenres(_.chain(result.data.allBooks).reduce((acc, b) => acc.concat(...b.genres), [])
+        .uniq()
+        .value())
     }
-  },[result])
+  }, [result])
+
+  useEffect(() => {
+    if (lazyResult.data) {
+      setBooks(lazyResult.data.allBooks)
+    }
+  }, [lazyResult])
   
+  const bookFilter = (filter) => () => {
+    filterQuery({variables: {genre: filter}})
+  } 
   if (!props.show) {
     return null
   }
@@ -39,6 +54,13 @@ const Books = (props) => {
           )}
         </tbody>
       </table>
+      <div>
+        <button active={result.data} onClick={()=>setBooks(result.data.allBooks)}>reset filter</button>
+      </div>
+      <div>
+        Filter by genre:
+        {genres.map(g => <button onClick={bookFilter(g)} key={g}>{g}</button>)}
+      </div>
     </div>
   )
 }
