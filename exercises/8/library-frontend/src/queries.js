@@ -64,3 +64,17 @@ query me{
   }
 }
 `
+
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      id
+      title
+      author{
+        name
+        }
+      published
+      genres
+      }
+  }
+`

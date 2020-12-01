@@ -25,6 +25,8 @@ const Books = (props) => {
     }
   }, [lazyResult])
   
+
+
   const bookFilter = (filter) => () => {
     filterQuery({variables: {genre: filter}})
   } 
