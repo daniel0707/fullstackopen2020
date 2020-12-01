@@ -1,4 +1,4 @@
-const { ApolloServer, UserInputError, gql, AuthenticationError } = require('apollo-server')
+const { ApolloServer, UserInputError, gql } = require('apollo-server')
 const jwt = require('jsonwebtoken')
 
 const mongoose = require('mongoose')
@@ -38,6 +38,7 @@ const typeDefs = gql`
     name: String!
     phone: String
     address: Address!
+    friendOf: [User!]!
     id: ID!
   }
 
@@ -80,17 +81,25 @@ const typeDefs = gql`
       name: String!
     ): User      
   }  
+
+  type Subscription {
+    personAdded: Person!
+  }   
 `
+const { PubSub } = require('apollo-server')
+const pubsub = new PubSub()
 
 const resolvers = {
   Query: {
     personCount: () => Person.collection.countDocuments(),
     allPersons: (root, args) => {
       if (!args.phone) {
-        return Person.find({})
+        return Person.find({}).populate('friendOf')
       }
   
-      return Person.find({ phone: { $exists: args.phone === 'YES'  }})
+      return Person.find({ phone: { $exists: args.phone === 'YES' } })
+        .populate('friendOf')
+
     },
     findPerson: (root, args) => Person.findOne({ name: args.name }),
     me: (root, args, context) => {
@@ -103,6 +112,14 @@ const resolvers = {
         street: root.street,
         city: root.city
       }
+    },
+    friendOf: async (root) => {
+      const friends = await User.find({
+        friends: {
+          $in: [root._id]
+        }
+      })
+      return friends
     }
   },
   Mutation: {
@@ -124,6 +141,8 @@ const resolvers = {
           invalidArgs: args,
         })
       }
+
+      pubsub.publish('PERSON_ADDED', { personAdded: person })
 
       return person
     },
@@ -152,8 +171,6 @@ const resolvers = {
         })
     }, 
     login: async (root, args) => {
-      const users = await User.find({})
-      //console.log(users)
       const user = await User.findOne({ username: args.username })
   
       if ( !user || args.password !== 'secret' ) {
@@ -183,8 +200,13 @@ const resolvers = {
       await currentUser.save()
   
       return currentUser
-    },       
-  }
+    }    
+  },
+  Subscription: {
+    personAdded: {
+      subscribe: () => pubsub.asyncIterator(['PERSON_ADDED'])
+    },
+  },
 }
 
 const server = new ApolloServer({
@@ -205,6 +227,7 @@ const server = new ApolloServer({
   }  
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })

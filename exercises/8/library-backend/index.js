@@ -78,7 +78,7 @@ const resolvers = {
   Query: {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
-    allBooks: (root, args) => {
+    allBooks: async (root, args) => {
       if (_.isEmpty(args)) {
         return Book.find().populate('author')
       }
@@ -93,6 +93,16 @@ const resolvers = {
         },
         {
           $unwind: '$author'
+        },
+        { // aggregate needs manual ID translation
+          $set: {
+            id: {
+              $toString: "$_id"
+            }
+          }
+        },
+        { // remove remaining object after translation
+          $unset: "_id"
         }
       ]
       if (args.author) {
@@ -109,7 +119,9 @@ const resolvers = {
           }
         })
       }
-      return Book.aggregate(agg).exec()
+      const result = await Book.aggregate(agg).exec()
+      return result
+      //return Book.aggregate(agg).exec()
     },
     allAuthors: () => Author.find({}),
     me: (root, args, context) => {
