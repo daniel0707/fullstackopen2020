@@ -5,7 +5,9 @@ const mongoose = require('mongoose')
 const Book = require('./models/book')
 const Author = require('./models/author')
 const User = require('./models/user')
+const DatLoader = require('dataloader')
 
+mongoose.set('debug',true)
 require('dotenv').config()
 const pubsub = new PubSub()
 mongoose.set('useFindAndModify', false)
@@ -78,10 +80,30 @@ const typeDefs = gql`
   }
 `
 
+const authorBookCountLoader = new DatLoader(async (authorIDs) => {
+  const allBooks = await Book.find({})
+  const authorBookCountMap = _.countBy(allBooks, 'author')
+  return authorIDs.map(a=>authorBookCountMap[a])
+})
+
+const fetchUser = async (req) => {
+  const auth = req ? req.headers.authorization : null
+  if (auth && auth.toLowerCase().startsWith('bearer ')) {
+    const decodedToken = jwt.verify(
+      auth.substring(7), JWT_SECRET
+    )
+
+    const currentUser = await User
+      .findById(decodedToken.id).populate('friends')
+
+    return currentUser
+  }else return null
+}
+
 const resolvers = {
   Query: {
-    bookCount: () => Book.collection.countDocuments(),
-    authorCount: () => Author.collection.countDocuments(),
+    bookCount: async () => await Book.collection.countDocuments(),
+    authorCount: async () => await Author.collection.countDocuments(),
     allBooks: async (root, args) => {
       if (_.isEmpty(args)) {
         return Book.find().populate('author')
@@ -127,14 +149,15 @@ const resolvers = {
       return result
       //return Book.aggregate(agg).exec()
     },
-    allAuthors: () => Author.find({}),
+    allAuthors: async() => await Author.find({}),
     me: (root, args, context) => {
       return context.currentUser
     }
   },
   Author: {
-    books: (parent) => {
-      return Book.countDocuments({ 'author': mongoose.Types.ObjectId(parent._id) })
+    books: async (root, args, { loaders }) => {
+      return await loaders.books.load(root.id)
+      //Book.countDocuments({ 'author': mongoose.Types.ObjectId(parent._id) })
     }
   },
   Mutation: {
@@ -216,17 +239,9 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: async ({ req }) => {
-    const auth = req ? req.headers.authorization : null
-    if (auth && auth.toLowerCase().startsWith('bearer ')) {
-      const decodedToken = jwt.verify(
-        auth.substring(7), JWT_SECRET
-      )
-
-      const currentUser = await User
-        .findById(decodedToken.id).populate('friends')
-
-      return { currentUser }
-    }
+    const loaders = {books: authorBookCountLoader}
+    const currentUser = fetchUser(req)
+    return currentUser? {currentUser, loaders} : {loaders}
   }  
 })
 
