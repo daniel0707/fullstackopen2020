@@ -10,7 +10,7 @@ interface exerciseResults {
   average: number
 }
 
-interface args {
+export interface args {
   target: number;
   hours: Array<number>
 }
@@ -35,7 +35,7 @@ const parseArguments = (args: Array<string>): args => {
   };
 };
 
-const exerciseCalculator = (target: number, hours: Array<number>): exerciseResults => {
+export const exerciseCalculator = (target: number, hours: Array<number>): exerciseResults => {
   return hours.reduce((acc, curr, index, arr) => {
     acc.periodLength += 1;
     if (curr > 0) acc.trainingDays += 1;
@@ -73,9 +73,11 @@ const exerciseCalculator = (target: number, hours: Array<number>): exerciseResul
   });
 };
 
-try {
-  const { target, hours } = parseArguments(process.argv);
-  console.log(exerciseCalculator(target, hours));
-} catch (e) {
-  console.log('Error, ', e);
-}
+export const execute = (): void => {
+  try {
+    const { target, hours } = parseArguments(process.argv);
+    console.log(exerciseCalculator(target, hours));
+  } catch (e) {
+    console.log('Error, ', e);
+  }
+};
