@@ -26,7 +26,7 @@ const parseArgs = (args: Array<String>): bmiValues => {
   }
 }
 
-const calculateBmi = (height: number, mass: number): Result => {
+export const calculateBmi = (height: number, mass: number): Result => {
   height = height / 100
   const val = mass / (height * height)
   if (val < 15) return 'Very severely underweight'
@@ -39,9 +39,11 @@ const calculateBmi = (height: number, mass: number): Result => {
   else return 'Obese Class III (Very severely obese)'
 }
 
-try {
-  const { height, mass } = parseArgs(process.argv)
-  console.log(calculateBmi(height, mass))
-} catch (e) {
-  console.log("Error, ", e.message)
+export const execute = () => {
+  try {
+    const { height, mass } = parseArgs(process.argv)
+    console.log(calculateBmi(height, mass))
+  } catch (e) {
+    console.log("Error, ", e.message)
+  }
 }
