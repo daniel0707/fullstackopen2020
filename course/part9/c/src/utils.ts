@@ -12,15 +12,17 @@ const parseComment = (comment: any): string => {
   if (!comment || !isString(comment)) {
     throw new Error(`Incorrect or missing comment: ${comment}`);
   }
-
   return comment;
 };
+
 const isDate = (date: string): boolean => {
   return Boolean(Date.parse(date));
 };
+
 const isWeather = (param: any): param is Weather => {
   return Object.values(Weather).includes(param);
 };
+
 const parseWeather = (weather: any): Weather => {
   if (!weather || !isWeather(weather)) {
       throw new Error(`Incorrect or missing weather: ${weather}`);
