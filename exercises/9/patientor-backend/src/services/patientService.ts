@@ -12,6 +12,10 @@ const getPats = (): Array<PublicPatient> => {
   );
 };
 
+const getPat = (id:string): PublicPatient| undefined => {
+  return pats.find(p=> p.id===id);
+};
+
 const addPat = (pat: NewPatient): Patient => {
   const newPat = {
     id: v4(),
@@ -22,4 +26,4 @@ const addPat = (pat: NewPatient): Patient => {
   return newPat;
 };
 
-export default { getPats, addPat };
+export default { getPats, addPat, getPat };
