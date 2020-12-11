@@ -1,9 +1,14 @@
 import express from 'express';
 import diagnoseRouter from './routes/diagnoses';
 import patientRouter from './routes/patients';
-
+import cors, { CorsOptions } from 'cors';
 const app = express();
 
+const corsOptions: CorsOptions = {
+  origin: 'http://localhost:3000'
+}; 
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static('static'));
 
