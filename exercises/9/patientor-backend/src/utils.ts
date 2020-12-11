@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Gender, NewPatient } from './types';
+import { Gender, NewPatient, HealthCheckEnum} from './types';
 
 const isString = (text: any): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -51,7 +51,14 @@ const parseDate = (date: any): string => {
   return date;
 };
 
+export const isValidEntry = (entry: any): void => {
+  if (!entry || !(entry.type in HealthCheckEnum)) throw new Error("Not a valid entry!");
+};
+
 const toNewPatient = (obj: any): NewPatient => {
+  for (const entry of obj?.entries) {
+    isValidEntry(entry);
+  }
   return {
     name: parseName(obj.name),
     dateOfBirth: parseDate(obj.dateOfBirth),

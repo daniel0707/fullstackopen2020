@@ -12,7 +12,7 @@ const getPats = (): Array<PublicPatient> => {
   );
 };
 
-const getPat = (id:string): PublicPatient| undefined => {
+const getPat = (id:string): Patient | undefined => {
   return pats.find(p=> p.id===id);
 };
 
