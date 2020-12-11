@@ -4,7 +4,7 @@ import { Header, Icon, SemanticICONS } from 'semantic-ui-react';
 import { useParams } from 'react-router-dom';
 import { apiBaseUrl } from "../constants";
 import { Patient, Gender } from '../types';
-import { useStateValue } from "../state";
+import { useStateValue, addPatient } from "../state";
 
 const PatientDetailsPage: React.FC = () => {
   const [patientDetails, setPatientDetails] = useState<Patient | null>(null);
@@ -14,10 +14,7 @@ const PatientDetailsPage: React.FC = () => {
   const getPatient = async () => {
     try {
       const patient = await axios.get(`${apiBaseUrl}/patients/${id}`);
-      dispatch({
-        type: "ADD_PATIENT",
-        payload: patient.data
-      });
+      dispatch(addPatient(patient.data));
     } catch (e) {
       console.log(e);
     }
