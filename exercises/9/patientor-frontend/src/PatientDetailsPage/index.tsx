@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Header, Icon, SemanticICONS } from 'semantic-ui-react';
+import { Header, Icon, SemanticICONS, Loader } from 'semantic-ui-react';
 import { useParams } from 'react-router-dom';
 import { apiBaseUrl } from "../constants";
 import { Patient, Gender } from '../types';
 import { useStateValue, addPatient } from "../state";
+import EntryDetails from './EntryDetails';
 
 const PatientDetailsPage: React.FC = () => {
   const [patientDetails, setPatientDetails] = useState<Patient | null>(null);
@@ -21,7 +22,6 @@ const PatientDetailsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(patientDetails);
     if (patients) {
       if (patients[id]?.ssn !== undefined) {
         setPatientDetails(patients[id]);
@@ -41,8 +41,10 @@ const PatientDetailsPage: React.FC = () => {
         return 'genderless';
     }
   };
+
+
   if (!patientDetails) {
-    return (<div>Loading...</div>);
+    return (<Loader>Loading...</Loader>);
   }
   return (
     <div>
@@ -50,26 +52,15 @@ const PatientDetailsPage: React.FC = () => {
       <p>ssn: {patientDetails.ssn}</p>
       <p>birthday: {patientDetails.dateOfBirth}</p>
       <p>occupation: {patientDetails.occupation}</p>
-      {patientDetails.entries.length > 0 && <Header as='h3'>entries</Header> }
-      {patientDetails.entries.map(entry => {
-          return (
-            <div key={entry.id}>
-              <p>
-                <b>{entry.date} </b>
-                <i>{entry.description}</i>
-              </p>
-              <ul>
-                {entry.diagnosisCodes?.map(code => {
-                  return (
-                    <li key={code}>
-                      {code} {diagnosis[code].name}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          );
-        })}
+      {patientDetails.entries.length > 0 && <Header as='h3'>Entries</Header> }
+      {patientDetails.entries.map(entry =>{
+        if (Object.keys(diagnosis).length > 0) {
+          return <EntryDetails key={entry.id} entry={entry} />;
+        } else {
+          return <Loader/>;
+        }
+      }
+        )}
     </div>
   );
 };
