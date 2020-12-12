@@ -9,7 +9,7 @@ import { useStateValue, addPatient } from "../state";
 const PatientDetailsPage: React.FC = () => {
   const [patientDetails, setPatientDetails] = useState<Patient | null>(null);
   const { id } = useParams<{ id: string }>();
-  const [{ patients }, dispatch] = useStateValue();
+  const [{ patients, diagnosis }, dispatch] = useStateValue();
 
   const getPatient = async () => {
     try {
@@ -60,7 +60,11 @@ const PatientDetailsPage: React.FC = () => {
               </p>
               <ul>
                 {entry.diagnosisCodes?.map(code => {
-                  return (<li key={code}>{code}</li>);
+                  return (
+                    <li key={code}>
+                      {code} {diagnosis[code].name}
+                    </li>
+                  );
                 })}
               </ul>
             </div>
