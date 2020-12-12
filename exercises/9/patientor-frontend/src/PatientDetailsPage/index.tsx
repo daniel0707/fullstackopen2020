@@ -21,14 +21,16 @@ const PatientDetailsPage: React.FC = () => {
   };
 
   useEffect(() => {
+    console.log(patientDetails);
     if (patients) {
       if (patients[id]?.ssn !== undefined) {
         setPatientDetails(patients[id]);
-      }else {
+      } else {
         getPatient();
       }
-    } 
-},[patients]);
+    }
+  }, [patients]);
+  
   const genderToIcon = (gender: Gender): SemanticICONS => {
     switch (gender) {
       case 'male':
@@ -44,10 +46,26 @@ const PatientDetailsPage: React.FC = () => {
   }
   return (
     <div>
-      <Header as='h1'>{patientDetails.name}<Icon name={genderToIcon(patientDetails.gender)}/></Header>
+      <Header as='h1'>{patientDetails.name}<Icon name={genderToIcon(patientDetails.gender)} /></Header>
       <p>ssn: {patientDetails.ssn}</p>
       <p>birthday: {patientDetails.dateOfBirth}</p>
       <p>occupation: {patientDetails.occupation}</p>
+      {patientDetails.entries.length > 0 && <Header as='h3'>entries</Header> }
+      {patientDetails.entries.map(entry => {
+          return (
+            <div key={entry.id}>
+              <p>
+                <b>{entry.date} </b>
+                <i>{entry.description}</i>
+              </p>
+              <ul>
+                {entry.diagnosisCodes?.map(code => {
+                  return (<li key={code}>{code}</li>);
+                })}
+              </ul>
+            </div>
+          );
+        })}
     </div>
   );
 };
