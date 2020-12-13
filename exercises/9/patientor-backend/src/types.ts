@@ -1,3 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DistributiveOmit<T, K extends keyof any> = T extends any
+  ? Omit<T, K>
+  : never;
+
 export interface Diagnosis {
   code: string;
   name: string;
@@ -24,7 +29,7 @@ export type PublicPatient = Omit<Patient, 'ssn' | 'entries' >;
 
 export type NewPatient = Omit<Patient, 'id'>;
 
-interface BaseEntry {
+export interface BaseEntry {
   id: string;
   description: string;
   date: string;
@@ -40,9 +45,9 @@ export enum HealthCheckRating {
 }
 
 export enum HealthCheckEnum {
-  "HealthCheck",
-  "Hospital",
-  "OccupationalHealthcare",
+  "HealthCheck" ="HealthCheck",
+  "Hospital"="Hospital",
+  "OccupationalHealthcare"="OccupationalHealthcare",
 }
 
 interface HealthCheckEntry extends BaseEntry {
@@ -71,3 +76,5 @@ export type Entry =
   | HospitalEntry
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
+
+export type NewEntry = DistributiveOmit<Entry, "id">;

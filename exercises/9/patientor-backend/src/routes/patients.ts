@@ -1,8 +1,19 @@
 import express from 'express';
 import patientService from '../services/patientService';
-import toNewPatient, { isValidEntry } from '../utils';
+import toNewPatient, { isValidEntry, toNewEntry } from '../utils';
 
 const router = express.Router();
+
+
+router.post('/:id/entries', (req, res) => {
+  try {
+    const newEntry = toNewEntry(req.body);
+    const modifiedPatient = patientService.addPatientEntry(newEntry, req.params.id);
+    res.json(modifiedPatient);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
 
 router.get('/:id', (req, res) => {
   if (typeof (req.params.id) === 'string') {
