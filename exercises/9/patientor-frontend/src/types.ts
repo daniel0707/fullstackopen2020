@@ -58,6 +58,12 @@ export type Entry =
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
 
+export interface NewEntry extends Omit<HospitalEntry, "type"|"id">,
+Omit<OccupationalHealthcareEntry,"type"|"id">,
+Omit<HealthCheckEntry,"type"|"id">{
+  type: HealthCheckEnum;
+}
+
 export interface Patient {
   id: string;
   name: string;

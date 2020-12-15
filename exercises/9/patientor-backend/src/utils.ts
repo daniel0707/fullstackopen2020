@@ -143,7 +143,7 @@ const parseEmployerName = (name: any): string => {
 };
 
 export const toNewEntry = (entry: any): NewEntry => {
-  const codes: Array<Diagnosis['code']> | undefined = parseDiagnosisCodes(entry.codes);
+  const codes: Array<Diagnosis['code']> | undefined = parseDiagnosisCodes(entry.diagnosisCodes);
   const newBaseEntry: Omit<BaseEntry,"id"> = Object.assign({},
     {
       id: v4(),
